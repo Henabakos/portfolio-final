@@ -1,0 +1,161 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id               String   @id @default(cuid())
+  title            String
+  description      String?  @db.Text
+  image            String
+  category         String
+  link             String?
+  tags             String[]
+  featured         Boolean  @default(false)
+  order            Int      @default(0)
+  client           String?
+  timeline         String?
+  serviceArea      String[]
+  introduction     String?  @db.Text
+  goal             String?  @db.Text
+  challenge        String?  @db.Text
+  challengeImages  String[]
+  outcomes         Json?    // Array of {percentage, title, description}
+  testimonial      Json?    // Object with {author, position, quote, image?}
+  conclusion       String?  @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @db.Text
+  excerpt     String?
+  coverImage  String?
+  slug        String   @unique
+  published   Boolean  @default(false)
+  tags        String[] // Array of tags
+  readTime    Int?     // Reading time in minutes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blog_posts")
+}
+
+model About {
+  id            String   @id @default(cuid())
+  name          String
+  title         String   // e.g., "Product Designer"
+  bio           String   @db.Text
+  profileImage  String
+  resumeLink    String?
+  skills        String[] // Array of skills
+  experience    String   // e.g., "12 Years Experience"
+  projectsCount String   // e.g., "1.5k Projects Complete"
+  available     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("about")
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  email     String
+  phone     String?
+  location  String?
+  socials   Json     // JSON object for social media links
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contact")
+}
+
+model Social {
+  id        String   @id @default(cuid())
+  platform  String   // e.g., "Instagram", "Youtube", "Twitter"
+  username  String
+  followers String   // e.g., "50.8k followers"
+  url       String
+  icon      String   // Icon name for lucide-react
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("socials")
+}
+
+model Tool {
+  id        String   @id @default(cuid())
+  name      String   // e.g., "Figma", "Webflow", "Framer"
+  icon      String   // Icon name for lucide-react
+  category  String   // e.g., "Design", "Development"
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tools")
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "Product Design"
+  description String?
+  icon        String   // Icon name for lucide-react
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("services")
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  institution String   // e.g., "Google Design School"
+  degree      String   // e.g., "Master in Interaction Design"
+  period      String   // e.g., "2016 - 2018"
+  description String   @db.Text
+  logo        String?  // URL to company/institution logo
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("education")
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  company     String   // e.g., "Envato"
+  position    String   // e.g., "UX/UI Designer"
+  period      String   // e.g., "July - 2017"
+  description String   @db.Text
+  logo        String?  // URL to company logo
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("experience")
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String   // e.g., "Ashton Agar"
+  position  String   // e.g., "Senior Designer"
+  content   String   @db.Text
+  rating    Int      @default(5) // 1-5 stars
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}
