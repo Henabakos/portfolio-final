@@ -1,7 +1,7 @@
-// app/admin/login/AdminLoginClient.js (Client Component)
+// app/admin/login/AdminLoginClient.js
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,24 +11,59 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const params = useSearchParams();
-  const redirect = params.get("redirect") || "/admin";
+  const [redirect, setRedirect] = useState("/admin");
+
+  // Safely handle redirect param
+  useEffect(() => {
+    const redirectParam = params.get("redirect");
+    console.log("Redirect param:", redirectParam);
+    if (redirectParam) {
+      setRedirect(redirectParam);
+    }
+  }, [params]);
+
+  // Log cookies for debugging
+  useEffect(() => {
+    const cookies = document.cookie;
+    console.log("Client cookies:", cookies);
+  }, []);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
+
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include", // Ensure cookies are sent/received
       });
+
+      const data = await res.json();
+      console.log("API Response:", {
+        status: res.status,
+        ok: res.ok,
+        data,
+        headers: Object.fromEntries(res.headers.entries()),
+      });
+
       if (res.ok) {
-        router.push(redirect);
+        console.log("Redirecting to:", redirect);
+        // Use window.location.href for a full reload to ensure cookie is sent
+        window.location.href = redirect;
       } else {
-        alert("Invalid credentials");
+        setError(data.message || "Invalid credentials");
+        alert(data.message || "Invalid credentials");
       }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An unexpected error occurred");
+      alert("An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -54,6 +89,7 @@ export default function AdminLogin() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Signing in..." : "Sign In"}
             </Button>
