@@ -1,6 +1,6 @@
 "use client";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"; // 🚀 prevent prerendering crash
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
