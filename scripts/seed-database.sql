@@ -47,7 +47,7 @@ VALUES (
 -- Insert Social media data
 INSERT INTO socials (id, platform, username, followers, url, icon, "order", created_at, updated_at)
 VALUES 
-  ('social_1', 'Instagram', '@alexhales', '50.8k followers', '#', 'Instagram', 1, NOW(), NOW()),
+  ('social_1', 'Instagram', '@hales', '50.8k followers', '#', 'Instagram', 1, NOW(), NOW()),
   ('social_2', 'Youtube', 'Alex Hales', '25k subscribers', '#', 'Youtube', 2, NOW(), NOW()),
   ('social_3', 'Twitter', '@alexhales', '3.5k followers', '#', 'Twitter', 3, NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET

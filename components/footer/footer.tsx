@@ -11,7 +11,7 @@ export function Footer() {
             href="mailto:youremail@domain.com"
             className="text-lg text-foreground hover:text-muted-foreground transition-colors block"
           >
-            youremail@domain.com
+            henogato9876@gmail.com
           </a>
 
           <div className="pt-8">

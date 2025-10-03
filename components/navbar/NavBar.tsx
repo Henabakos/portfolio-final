@@ -36,7 +36,7 @@ export function Header() {
     { name: "About", href: "/about" },
     { name: "Projects", href: "/projects" },
     { name: "Blog", href: "/blog" },
-    { name: "Pages", href: "/pages" },
+    // { name: "Pages", href: "/pages" },
   ];
 
   return (
@@ -80,7 +80,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <Button
+          {/* <Button
             variant="ghost"
             size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -93,7 +93,7 @@ export function Header() {
               </>
             )}
             <span className="sr-only">Toggle theme</span>
-          </Button>
+          </Button> */}
           <Button
             variant="outline"
             onClick={() => (window.location.href = "/contact")}
@@ -106,7 +106,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden h-9 w-9 hover:bg-secondary/80 transition-colors"
+                className="lg:hidden h-9 w-9 hover:bg-secondary/80 transition-colors hover:text-gray-700"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>

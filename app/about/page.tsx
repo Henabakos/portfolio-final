@@ -9,13 +9,29 @@ import {
   ArrowRight,
   CheckCheck,
   Layout,
-  Quote,
-  Youtube,
-  Twitter,
+  Atom,
+  Code,
+  CurlyBraces,
+  Figma,
+  Frame,
+  Github,
+  Globe,
   Instagram,
+  Rocket,
+  Twitter,
+  Target,
+  Youtube,
+  Linkedin,
+  Feather,
+  Server,
+  Database,
+  CodeXml,
+  Quote,
 } from "lucide-react";
 import Link from "next/link";
 import { LoadingScreen } from "@/components/loading-screen";
+import emailjs from "@emailjs/browser";
+import { CustomArrow } from "@/components/custom-arrow";
 
 interface Service {
   id: string;
@@ -59,8 +75,8 @@ interface About {
   name: string;
   title: string;
   bio: string;
-  profileImage: string; // Changed from Blob to string for URL
-  resumeLink: string; // Changed from URL to string
+  profileImage: string;
+  resumeLink: string;
 }
 
 // Define a safe initial state
@@ -72,6 +88,31 @@ const initialAboutState: About = {
   profileImage: "/user.jpg", // Fallback image
   resumeLink: "#", // Fallback link
 };
+
+const getIconComponent = (iconName: string) => {
+  const icons: { [key: string]: any } = {
+    Instagram,
+    Youtube,
+    Twitter,
+    Figma,
+    Globe,
+    Target,
+    Frame,
+    Feather,
+    CurlyBraces,
+    Layout,
+    Rocket,
+    Atom,
+    Code,
+    Server,
+    Database,
+    Linkedin,
+    Github,
+    CodeXml,
+  };
+  return icons[iconName] || Code;
+};
+
 export default function AboutPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
@@ -79,6 +120,17 @@ export default function AboutPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [about, setAbout] = useState<About>(initialAboutState);
   const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    budget: "",
+    message: "",
+  });
+  const [formStatus, setFormStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,6 +178,46 @@ export default function AboutPage() {
     fetchData();
   }, []);
 
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setFormStatus({ type: null, message: "" });
+
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          budget: formData.budget,
+          message: formData.message,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+      setFormStatus({
+        type: "success",
+        message: "Your message has been sent successfully!",
+      });
+      setFormData({ name: "", email: "", budget: "", message: "" });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      setFormStatus({
+        type: "error",
+        message: "Failed to send message. Please try again later.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -145,13 +237,14 @@ export default function AboutPage() {
               </p>
             </div>
             <p className="text-[#6E737B] leading-[33.75px] text-[14px] lg:text-[18px] font-normal max-w-prose">
-              A creative and versatile digital designer with over twelve years
-              of experience in{" "}
+              A creative and versatile digital designer with over three years of
+              experience in{" "}
               <span className="text-[#2F3236] border border-gray-200 px-2 py-1 rounded-md font-normal">
                 designing and developing
               </span>{" "}
-              engaging digital media for various platforms and audiences. Lorem
-              ipsum dolor sit amet consectetur.
+              engaging digital media for various platforms and audiences.
+              Passionate about crafting modern, user-friendly designs that make
+              a lasting impact.
             </p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
               <div className="flex items-center gap-2 text-[#6E737B] ">
@@ -181,11 +274,11 @@ export default function AboutPage() {
 
           {/* Image (on top in small, right in large) */}
           <div className="flex justify-center md:justify-end order-1 md:order-2 w-full mt-1 md:mt-0">
-            <div className="relative w-full max-w-full sm:max-w-[360px] md:max-w-[320px] lg:max-w-[480px] aspect-square">
+            <div className="relative w-full max-w-full sm:max-w-[360px] md:max-w-[320px] lg:max-w-[480px] aspect-square ">
               <img
                 src={about.profileImage || "user.jpg"}
                 alt="Henok Assefa"
-                className="w-full aspect-square rounded-2xl object-cover bg-[#f5f7f9]"
+                className="w-full aspect-square rounded-2xl object-cover bg-[#CDD0DA]"
               />
             </div>
           </div>
@@ -206,7 +299,7 @@ export default function AboutPage() {
                   key={exp.id}
                   className="flex flex-col md:flex-row items-start gap-4 sm:gap-6 lg:gap-8 p-2"
                 >
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 gradient-card border border-[#f5f7f9] rounded-full flex items-center justify-center p-3 sm:p-4 flex-shrink-0 overflow-hidden">
+                  <div className="w-12 h-12 sm:w-20 sm:h-20 gradient-card border border-[#f5f7f9] rounded-full flex items-center justify-center p-3 sm:p-4 flex-shrink-0 overflow-hidden">
                     {exp.logo ? (
                       <img
                         src={exp.logo || "/placeholder.svg"}
@@ -286,10 +379,10 @@ export default function AboutPage() {
         <Card className="p-0">
           <div className="grid grid-cols-2 divide-x divide-y divide-black/5 h-full">
             {[
-              { value: "12", label: "Years of Experience" },
-              { value: "1.5k", label: "Projects Complete" },
-              { value: "950", label: "Happy Customers" },
-              { value: "14", label: "Awards Won" },
+              { value: "4", label: "Years of Experience" },
+              { value: "100+", label: "Projects Complete" },
+              { value: "100+", label: "Happy Customers" },
+              { value: "95%", label: "Positive Feedback" },
             ].map((item, index) => (
               <div
                 key={index}
@@ -313,29 +406,29 @@ export default function AboutPage() {
                 icon: "W",
                 bg: "bg-blue-100",
                 circle: "bg-blue-500",
-                label: "AWWWARDS",
-                value: "2 Awards",
+                label: "Client Satisfaction",
+                value: "15+ Testimonials",
               },
               {
                 icon: "",
                 bg: "bg-gray-100",
                 circle: "bg-gray-600",
-                label: "FWA of the Day",
-                value: "3 Awards",
+                label: "Direct Feedback",
+                value: "2-Hour Response",
               },
               {
                 icon: "B",
                 bg: "bg-blue-100",
                 circle: "bg-blue-500",
-                label: "Best UI Behance",
-                value: "5 Awards",
+                label: "Delivery Speed",
+                value: "2-Week Average",
               },
               {
                 icon: "P",
                 bg: "bg-red-100",
                 circle: "bg-red-500",
-                label: "Product of the Day",
-                value: "4 Awards",
+                label: "Post-Launch",
+                value: "3 Month Support",
               },
             ].map((item, i) => (
               <div
@@ -351,8 +444,12 @@ export default function AboutPage() {
                     {item.icon}
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mb-1">{item.label}</p>
-                <p className="font-semibold text-gray-900">{item.value}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                  {item.label}
+                </p>
+                <p className="font-semibold text-gray-900 text-sm sm:text-md">
+                  {item.value}
+                </p>
               </div>
             ))}
           </div>
@@ -367,31 +464,30 @@ export default function AboutPage() {
           </h2>
           <Link href={"/services"}>
             <div className="space-y-6">
-              {services.map((service) => (
-                <div
-                  key={service.id}
-                  className="flex flex-col sm:flex-row items-start justify-between border-b border-b-gray-200 last:border-b-0 pb-8 hover:text-[#2f3236]"
-                >
-                  <div className="flex flex-col sm:flex-row flex-1 gap-4 sm:gap-12 lg:gap-40 gray-text hover:text-[#2f3236] text-[16px] leading-[28px]">
-                    {/* Left side (icon + title) */}
-                    <div className="flex items-center gap-4 min-w-[200px]">
-                      <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                        {/* <div className="w-6 h-6 bg-gray-600 rounded-sm"></div> */}
-                        <Layout className="w-7 h-7" />
+              {services.map((service) => {
+                const IconComponent = getIconComponent(service.icon);
+                return (
+                  <div
+                    key={service.id}
+                    className="flex flex-col sm:flex-row items-start justify-between border-b border-b-gray-200 last:border-b-0 pb-8 hover:text-[#2f3236]"
+                  >
+                    <div className="flex flex-col sm:flex-row flex-1 gap-4 sm:gap-12 lg:gap-40 gray-text hover:text-[#2f3236] text-[16px] leading-[28px]">
+                      {/* Left side (icon + title) */}
+                      <div className="flex items-center gap-4 min-w-[200px]">
+                        <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                          <IconComponent className="h-7 w-7" />
+                        </div>
+                        <h3 className="font-bold text-lg">{service.name}</h3>
                       </div>
-                      <h3 className="font-bold text-lg">{service.name}</h3>
+                      {/* Description */}
+                      <p className="flex-1 text-[14px] sm:text-[16px] leading-[30px]">
+                        {service.description}
+                      </p>
+                      <CustomArrow className="hidden sm:block h-10 w-10 shrink-0 " />
                     </div>
-
-                    {/* Description */}
-                    <p className="flex-1 text-[14px] sm:text-[16px] leading-[30px]">
-                      {service.description}
-                    </p>
-                    <ArrowRight className="hidden sm:block w-5 h-5 mt-1 shrink-0 ml-6" />
                   </div>
-
-                  {/* Arrow (only show on sm and up) */}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </Link>
         </div>
@@ -439,14 +535,14 @@ export default function AboutPage() {
         <Card className="border-0 shadow-sm bg-white/50 flex p-6">
           <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
             <div className="w-16 h-16 bg-pink-100 items-center justify-center flex gradient-card border border-gray-200 rounded-full">
-              <Youtube className="w-6 h-6 black-text" />{" "}
+              <Github className="w-6 h-6 black-text" />{" "}
             </div>
             <div className="text-center">
               <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text">
-                Youtube
+                Github
               </h3>
               <p className="text-sm gray-text text-[16px] leading-[30px]">
-                25k subscribers
+                Henabakos
               </p>
             </div>
           </CardContent>
@@ -455,14 +551,14 @@ export default function AboutPage() {
         <Card className="border-0 shadow-sm bg-white/50 flex p-6">
           <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
             <div className="w-16 h-16 bg-pink-100 items-center justify-center flex gradient-card border border-gray-200 rounded-full">
-              <Instagram className="w-6 h-6 black-text" />
+              <Linkedin className="w-6 h-6 black-text" />
             </div>
             <div className="text-center">
               <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text">
-                Instagram
+                Linkedin
               </h3>
               <p className="text-sm gray-text text-[16px] leading-[30px]">
-                50.8k followers
+                Henok Assefa
               </p>
             </div>
           </CardContent>
@@ -470,13 +566,13 @@ export default function AboutPage() {
         <Card className="border-0 shadow-sm bg-white/50 flex p-6">
           <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
             <div className="w-16 h-16 bg-pink-100 items-center justify-center flex gradient-card border border-gray-200 rounded-full">
-              <Twitter className="w-6 h-6 black-text" />{" "}
+              <Instagram className="w-6 h-6 black-text" />{" "}
             </div>
             <div className="text-center">
               <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text">
-                Twitter
+                Instagram
               </h3>
-              <p className="text-sm gray-text">1.2k followers</p>
+              <p className="text-sm gray-text">@henaman49</p>
             </div>
           </CardContent>
         </Card>
@@ -517,7 +613,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold black-text">Email</h3>
-                  <p className="gray-text">alex.hales@example.com</p>
+                  <p className="gray-text">henogato9876@gmail.com</p>
                 </div>
               </div>
 
@@ -539,7 +635,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold black-text">Phone</h3>
-                  <p className="gray-text">+1 (555) 123-4567</p>
+                  <p className="gray-text">+251945014531</p>
                 </div>
               </div>
 
@@ -567,7 +663,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold black-text">Location</h3>
-                  <p className="gray-text">San Francisco, CA</p>
+                  <p className="gray-text">Addis Ababa, Ethiopia</p>
                 </div>
               </div>
 
@@ -583,29 +679,59 @@ export default function AboutPage() {
             </div>
 
             {/* Contact Form */}
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <Input
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
                 placeholder="Your Name"
-                className="bg-white/50 border-gray-200 focus:border-gray-400"
+                className="bg-white/50 border-gray-200 focus:border-gray-400 rounded-full py-5"
+                required
               />
               <Input
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
                 placeholder="Your Email"
                 type="email"
-                className="bg-white/50 border-gray-200 focus:border-gray-400"
+                className="bg-white/50 border-gray-200 focus:border-gray-400 rounded-full py-5"
+                required
               />
               <Input
+                name="budget"
+                value={formData.budget}
+                onChange={handleInputChange}
                 placeholder="Project Budget"
-                className="bg-white/50 border-gray-200 focus:border-gray-400"
+                className="bg-white/50 border-gray-200 focus:border-gray-400 rounded-full py-5"
               />
               <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
                 placeholder="Tell me about your project..."
                 rows={4}
                 className="w-full px-3 py-2 bg-white/50 border border-gray-200 rounded-md focus:border-gray-400 focus:outline-none resize-none"
+                required
               />
-              <Button className="w-full bg-[#2F3236] text-white hover:bg-[#1a1d20] py-3">
-                Start a Project
+              {formStatus.message && (
+                <p
+                  className={`text-sm ${
+                    formStatus.type === "success"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {formStatus.message}
+                </p>
+              )}
+              <Button
+                type="submit"
+                className="w-full rounded-full bg-[#2F3236] text-white hover:bg-[#1a1d20] py-6"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Sending..." : "Start a Project"}
               </Button>
-            </div>
+            </form>
           </div>
         </Card>
       </div>

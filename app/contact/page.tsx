@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import emailjs from "@emailjs/browser";
+import { LoadingScreen } from "@/components/loading-screen";
 
 // --- MODIFIED CopyButton Component for embedded use ---
 function CopyButton({
@@ -52,17 +54,20 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    subject: "",
+    budget: "", // Replaced subject with budget
     description: "",
   });
   const [contact, setContact] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formStatus, setFormStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
 
   // Define contact data for easier use
-  const phone = contact?.phone || "+0123 456 789";
-  const email = contact?.email || "alex.hales.superlong.email@example.com";
-  // The combinedContactInfo variable is no longer needed but kept as an example
-  // const combinedContactInfo = `Phone: ${phone}\nEmail: ${email}`;
+  const phone = contact?.phone || "+251945014531";
+  const email = contact?.email || "henogato9876@gmail.com";
 
   useEffect(() => {
     const load = async () => {
@@ -79,6 +84,10 @@ export default function ContactPage() {
     load();
   }, []);
 
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -89,10 +98,61 @@ export default function ContactPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+    setIsSubmitting(true);
+    setFormStatus({ type: null, message: "" });
+
+    // Add current time for the email
+    const now = new Date().toLocaleString("en-US", {
+      timeZone: "Africa/Addis_Ababa",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    const timeString = `${now} EAT`;
+
+    try {
+      const response = await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          name: formData.name,
+          email: formData.email,
+          budget: formData.budget,
+          message: formData.description, // Using description as the message content
+          time: timeString, // Include current time
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+      console.log("EmailJS response:", response);
+      setFormStatus({
+        type: "success",
+        message: "Your message has been sent successfully!",
+      });
+      setFormData({ name: "", email: "", budget: "", description: "" });
+    } catch (error) {
+      console.error("Detailed error sending email:", error);
+      if (error instanceof Error) {
+        setFormStatus({
+          type: "error",
+          message: `Failed to send message: ${
+            error.message || "Unknown error"
+          }`,
+        });
+      } else {
+        setFormStatus({
+          type: "error",
+          message: "Failed to send message. Please try again later.",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -160,14 +220,14 @@ export default function ContactPage() {
             </Card>
           </div>
 
-          {/* Right Side - Contact Form (unchanged) */}
+          {/* Right Side - Contact Form */}
           <Card className="p-4 sm:p-6 lg:px-7 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1">
             <div className="">
               <div className="mb-8">
                 <h2 className="text-[24px] font-[700] black-text leading-[32px] mb-2">
                   Send an E-mail
                 </h2>
-                <p className="text-[16px] gray-text leading-[30px] ">
+                <p className="text-[16px] gray-text leading-[30px]">
                   for your inquiry and ideas
                 </p>
               </div>
@@ -190,7 +250,7 @@ export default function ContactPage() {
                     <Input
                       type="email"
                       name="email"
-                      placeholder="email"
+                      placeholder="Email"
                       value={formData.email}
                       onChange={handleInputChange}
                       className="h-12 bg-background border-border rounded-full placeholder:text-gray-400 p-6"
@@ -199,24 +259,24 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Subject */}
+                {/* Budget */}
                 <div>
                   <Input
                     type="text"
-                    name="subject"
-                    placeholder="Subject"
-                    value={formData.subject}
+                    name="budget"
+                    placeholder="Budget"
+                    value={formData.budget}
                     onChange={handleInputChange}
                     className="h-12 bg-background border-border rounded-full placeholder:text-gray-400 p-6"
                     required
                   />
                 </div>
 
-                {/* Description */}
+                {/* Description (mapped to message) */}
                 <div>
                   <Textarea
                     name="description"
-                    placeholder="Description"
+                    placeholder="Tell me about the project..."
                     value={formData.description}
                     onChange={handleInputChange}
                     className="min-h-32 bg-background border-border resize-none placeholder:text-gray-400 rounded-2xl p-5"
@@ -224,13 +284,25 @@ export default function ContactPage() {
                   />
                 </div>
 
-                {/* Submit Button */}
-                <div className="pt-4 flex justify-end">
+                {/* Submit Button and Status Message */}
+                <div className="pt-4">
+                  {formStatus.message && (
+                    <p
+                      className={`mb-4 text-sm ${
+                        formStatus.type === "success"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {formStatus.message}
+                    </p>
+                  )}
                   <Button
                     type="submit"
                     className="h-12 bg-foreground text-background hover:bg-foreground/90 font-medium rounded-full px-6 py-3"
+                    disabled={isSubmitting}
                   >
-                    Send Message
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>
                 </div>
               </form>

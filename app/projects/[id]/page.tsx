@@ -55,7 +55,7 @@ export default function ProjectDetailPage({
         <Card className="p-4 sm:p-6 lg:p-10 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-5">
             <div className="lg:col-span-2">
-              <h1 className="text-[48px] leading-[48px] lg:text-5xl font-bold mb-6 text-balance black-text">
+              <h1 className="text-[32px] lg:text-[48px] leading-[40px] lg:leading-[48px]  font-bold mb-6 text-balance black-text">
                 {project.title}
               </h1>
               <p className="text-[18px] gray-text leading-[33.75px]">

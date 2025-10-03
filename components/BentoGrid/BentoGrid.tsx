@@ -7,12 +7,16 @@ import {
   CurlyBraces,
   Figma,
   Frame,
+  Github,
   Globe,
   Instagram,
   Layout,
   Rocket,
   Twitter,
+  Target,
   Youtube,
+  Linkedin,
+  Feather,
   Server,
   Database,
   CodeXml,
@@ -26,12 +30,12 @@ import { CustomArrow } from "@/components/custom-arrow";
 
 // Define fallback data constants outside the component
 const FALLBACK_ABOUT = {
-  name: "Alex Hales",
+  name: "Henok Assefa",
   title: "Product Designer",
   bio: "As a product designer, I specialize in creating magical visual identities for digital products.",
   profileImage: "/user.jpg",
-  experience: "12",
-  projectsCount: "1.5k",
+  experience: "4",
+  projectsCount: "100+",
   available: true,
   skills: [
     "Product Strategy",
@@ -45,19 +49,19 @@ const FALLBACK_ABOUT = {
 const FALLBACK_SOCIALS = [
   {
     platform: "Instagram",
-    username: "@alexhales",
-    followers: "50.8k followers",
+    username: "@henaman49",
+    followers: "300 followers",
     icon: "Instagram",
   },
   {
-    platform: "Youtube",
-    username: "Alex Hales",
-    followers: "25k subscribers",
+    platform: "Github",
+    username: "Henabakos",
+    followers: "",
     icon: "Youtube",
   },
   {
-    platform: "Twitter",
-    username: "@alexhales",
+    platform: "Linkedin",
+    username: "Henok Assefa",
     followers: "3.5k followers",
     icon: "Twitter",
   },
@@ -112,7 +116,9 @@ export function BentoGrid() {
       Twitter,
       Figma,
       Globe,
+      Target,
       Frame,
+      Feather,
       CurlyBraces,
       Layout,
       Rocket,
@@ -120,6 +126,8 @@ export function BentoGrid() {
       Code,
       Server,
       Database,
+      Linkedin,
+      Github,
       CodeXml,
     };
     return icons[iconName] || Code;
@@ -145,7 +153,7 @@ export function BentoGrid() {
               <img
                 src={about.profileImage || "/placeholder.svg"}
                 alt={about.name}
-                className="w-full aspect-square rounded-2xl object-cover bg-background"
+                className="w-full aspect-square rounded-2xl object-cover bg-[#F5F7F9]"
               />
             </div>
           </div>
@@ -153,13 +161,13 @@ export function BentoGrid() {
         <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group mb-4 sm:mb-5 flex-1">
           <div className="flex flex-col h-full space-y-4 sm:space-y-6">
             <div className="space-y-3">
-              <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+              <div className="flex flex-row justify-between gap-2">
                 <p className="text-sm text-muted-foreground">
                   Hello there, I am
                 </p>
                 {about.available && (
-                  <div className="flex items-center gap-1 bg-accent text-accent-foreground px-2 py-1 rounded-full text-xs font-medium self-start sm:self-auto">
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <div className="flex items-center gap-1 gradient-card black-text  rounded-full border  px-5 py-2 text-sm font-medium self-start sm:self-auto">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     Available for hire
                   </div>
                 )}
@@ -200,22 +208,26 @@ export function BentoGrid() {
             const IconComponent = getIconComponent(social.icon);
             const isLast = index === socials.length - 1;
             return (
-              <div
-                key={social.platform}
-                className={`${
-                  !isLast ? "border-b border-border" : ""
-                } py-3 sm:py-4 flex gap-3`}
-              >
-                <div className="flex items-center gap-3">
-                  <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 text-foreground bg-background rounded-full p-2 border border-border" />
+              <Link href={social.url} key={social.platform}>
+                <div
+                  key={social.platform}
+                  className={`${
+                    !isLast ? "border-b border-border" : ""
+                  } py-3 sm:py-4 flex gap-3`}
+                >
+                  <div className="flex items-center gap-3">
+                    <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 text-foreground bg-background rounded-full p-2 border border-border" />
+                  </div>
+                  <div>
+                    <span className="font-medium text-sm">
+                      {social.platform}
+                    </span>
+                    <p className="text-xs text-muted-foreground">
+                      {social.username}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <span className="font-medium text-sm">{social.platform}</span>
-                  <p className="text-xs text-muted-foreground">
-                    {social.followers}
-                  </p>
-                </div>
-              </div>
+              </Link>
             );
           })}
         </Card>

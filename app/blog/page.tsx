@@ -165,7 +165,7 @@ export default function BlogPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold black-text">Email</h3>
-                    <p className="gray-text">alex.hales@example.com</p>
+                    <p className="gray-text">henogato9876@gmail.com</p>
                   </div>
                 </div>
 
