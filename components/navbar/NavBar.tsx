@@ -10,6 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/context/theme-context";
+import Image from "next/image";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,18 +50,16 @@ export function Header() {
         ${scrolled ? "my-0" : "my-4"}`}
     >
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <div className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary">
-            <div className="grid h-4 w-4 grid-cols-2 gap-0.5">
-              <div className="h-1.5 w-1.5 rounded-sm bg-primary-foreground"></div>
-              <div className="h-1.5 w-1.5 rounded-sm bg-primary-foreground"></div>
-              <div className="h-1.5 w-1.5 rounded-sm bg-primary-foreground"></div>
-              <div className="h-1.5 w-1.5 rounded-sm bg-primary-foreground"></div>
-            </div>
+        <div className="flex items-center justify-center">
+          <div className="relative h-10 w-10 md:h-14 md:w-14">
+            <Image
+              src="/logo 2 (1).svg" // put your file in public/
+              alt="Logo"
+              fill
+              className="object-contain dark:invert"
+              priority
+            />
           </div>
-          <span className="text-sm md:text-lg font-bold text-foreground">
-            BentoMan
-          </span>
         </div>
 
         <nav className="hidden lg:flex items-center space-x-8">
