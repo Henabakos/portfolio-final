@@ -19,6 +19,9 @@ import {
   Feather,
   Server,
   Database,
+  Sparkles,
+  Palette,
+  Package,
   CodeXml,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -127,6 +130,9 @@ export function BentoGrid() {
       Server,
       Database,
       Linkedin,
+      Sparkles,
+      Palette,
+      Package,
       Github,
       CodeXml,
     };
@@ -157,8 +163,8 @@ export function BentoGrid() {
                 <img
                   src={about.profileImage || "/placeholder.svg"}
                   alt={about.name}
-                  className="w-full aspect-square rounded-2xl object-cover bg-[#fdfdfd] dark:bg-[#2F3236] 
-                 grayscale contrast-[120%] brightness-[90%]"
+                  className="w-full aspect-square rounded-2xl object-cover bg-[#2F3236] 
+                 grayscale contrast-[120%] brightness-[95%]"
                 />
               </div>
             </div>
@@ -431,7 +437,7 @@ export function BentoGrid() {
             </div>
           </Card>
         </Link>
-        <Link href="/about" className="flex-1">
+        <Link href="/services" className="flex-1">
           <Card
             className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
     border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"

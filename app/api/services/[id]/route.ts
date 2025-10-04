@@ -8,6 +8,11 @@ export async function GET(
   try {
     const service = await prisma.service.findUnique({
       where: { id: params.id },
+      include: {
+        items: {
+          orderBy: { order: "asc" },
+        },
+      },
     });
 
     if (!service) {
@@ -30,7 +35,11 @@ export async function PUT(
 ) {
   try {
     const body = await request.json();
-    const { name, description, icon, order } = body;
+    const { name, description, icon, order, items } = body;
+
+    await prisma.serviceItem.deleteMany({
+      where: { serviceId: params.id },
+    });
 
     const service = await prisma.service.update({
       where: { id: params.id },
@@ -39,6 +48,17 @@ export async function PUT(
         description,
         icon,
         order,
+        items: items
+          ? {
+              create: items.map((item: { name: string; order: number }) => ({
+                name: item.name,
+                order: item.order || 0,
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        items: true,
       },
     });
 

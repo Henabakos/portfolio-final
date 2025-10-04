@@ -4,6 +4,11 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const services = await prisma.service.findMany({
+      include: {
+        items: {
+          orderBy: { order: "asc" },
+        },
+      },
       orderBy: { order: "asc" },
     });
     return NextResponse.json(services);
@@ -19,7 +24,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, description, icon, order } = body;
+    const { name, description, icon, order, items } = body;
 
     const service = await prisma.service.create({
       data: {
@@ -27,6 +32,17 @@ export async function POST(request: NextRequest) {
         description,
         icon,
         order: order || 0,
+        items: items
+          ? {
+              create: items.map((item: { name: string; order: number }) => ({
+                name: item.name,
+                order: item.order || 0,
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        items: true,
       },
     });
 
