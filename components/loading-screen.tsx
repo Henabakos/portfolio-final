@@ -4,7 +4,7 @@ export function LoadingScreen() {
   const letters = "LOADING".split("");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#f5f7f9]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#f5f7f9] dark:dark:bg-[#1A1A1A] ">
       <div className="flex items-center gap-8">
         {letters.map((letter, index) => (
           <span

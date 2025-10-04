@@ -39,7 +39,10 @@ export default function ProjectsPage() {
                 }
               >
                 <Link href={`/projects/${project.id}`}>
-                  <Card className="p-2 h-full sm:p-2 lg:p-2 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group mb-4 sm:mb-2 flex-1 cursor-pointer">
+                  <Card
+                    className="p-2 h-full sm:p-2 lg:p-2 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group mb-4 sm:mb-2 flex-1 cursor-pointer"
+                  >
                     <div className="flex flex-col h-full space-y-2">
                       <div className="h-48 sm:h-80">
                         <img
@@ -82,7 +85,10 @@ export default function ProjectsPage() {
                 }
               >
                 <Link href={`/projects/${project.id}`}>
-                  <Card className="p-4 h-full sm:p-6 lg:p-2 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group mb-4 sm:mb-2 flex-1 cursor-pointer">
+                  <Card
+                    className="p-4 h-full sm:p-6 lg:p-2 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group mb-4 sm:mb-2 flex-1 cursor-pointer"
+                  >
                     <div className="flex flex-col h-full space-y-2">
                       <div className="h-48 sm:h-80">
                         <img
@@ -122,7 +128,10 @@ export default function ProjectsPage() {
             {regularProjects.map((project: any) => (
               <div key={project.id} className="lg:col-span-1 md:col-span-1">
                 <Link href={`/projects/${project.id}`}>
-                  <Card className="p-4 h-full sm:p-6 lg:p-2 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group mb-4 sm:mb-2 flex-1 cursor-pointer">
+                  <Card
+                    className="p-4 h-full sm:p-6 lg:p-2 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group mb-4 sm:mb-2 flex-1 cursor-pointer"
+                  >
                     <div className="flex flex-col h-full space-y-2">
                       <div className="h-48 sm:h-80">
                         <img
@@ -171,7 +180,8 @@ export default function ProjectsPage() {
 
         {/* Load More Button - can be enhanced later */}
         <div className="text-center mt-10">
-          <Button className="bg-white/50 text-[#2F3236] hover:bg-[#2F3236] hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-[14px] sm:text-base">
+          <Button className="bg-white/50 text-[#2F3236] hover:bg-[#2F3236] dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] dark:text-white hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-[14px] sm:text-base">
+            {" "}
             Load More Projects
           </Button>
         </div>

@@ -5,6 +5,8 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
+import Color from "@tiptap/extension-color";
+import { TextStyle } from "@tiptap/extension-text-style";
 import { Button } from "@/components/ui/button";
 import {
   Bold,
@@ -17,7 +19,14 @@ import {
   Heading2,
   ImageIcon,
   Link2,
+  Palette,
 } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState } from "react";
 
 interface RichTextEditorProps {
   content: string;
@@ -30,9 +39,13 @@ export function RichTextEditor({
   onChange,
   placeholder,
 }: RichTextEditorProps) {
+  const [customColor, setCustomColor] = useState("#000000");
+
   const editor = useEditor({
     extensions: [
       StarterKit,
+      TextStyle,
+      Color,
       Image.configure({
         HTMLAttributes: {
           class: "rounded-lg max-w-full h-auto",
@@ -55,7 +68,7 @@ export function RichTextEditor({
           "prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none min-h-[300px] max-w-none p-4",
       },
     },
-    immediatelyRender: false, // Prevent SSR rendering
+    immediatelyRender: false,
   });
 
   if (!editor) {
@@ -75,6 +88,33 @@ export function RichTextEditor({
       editor.chain().focus().setLink({ href: url }).run();
     }
   };
+
+  const applyColor = (color: string) => {
+    editor.chain().focus().setColor(color).run();
+  };
+
+  const colorPalette = [
+    "#000000",
+    "#ffffff",
+    "#ef4444",
+    "#f97316",
+    "#f59e0b",
+    "#eab308",
+    "#84cc16",
+    "#22c55e",
+    "#10b981",
+    "#14b8a6",
+    "#06b6d4",
+    "#0ea5e9",
+    "#3b82f6",
+    "#6366f1",
+    "#8b5cf6",
+    "#a855f7",
+    "#d946ef",
+    "#ec4899",
+    "#f43f5e",
+    "#64748b",
+  ];
 
   return (
     <div className="border rounded-lg overflow-hidden">
@@ -109,6 +149,77 @@ export function RichTextEditor({
         >
           <Heading2 className="h-4 w-4" />
         </Button>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="relative"
+            >
+              <Palette className="h-4 w-4" />
+              <div
+                className="absolute bottom-1 right-1 h-2 w-2 rounded-full border border-white"
+                style={{
+                  backgroundColor:
+                    editor.getAttributes("textStyle").color || "#000000",
+                }}
+              />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64">
+            <div className="space-y-3">
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Preset Colors
+                </label>
+                <div className="grid grid-cols-10 gap-2">
+                  {colorPalette.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      className="h-6 w-6 rounded border-2 border-gray-300 hover:border-gray-500 transition-colors"
+                      style={{ backgroundColor: color }}
+                      onClick={() => applyColor(color)}
+                      title={color}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Custom Color
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="color"
+                    value={customColor}
+                    onChange={(e) => setCustomColor(e.target.value)}
+                    className="h-10 w-full rounded border cursor-pointer"
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => applyColor(customColor)}
+                  >
+                    Apply
+                  </Button>
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full bg-transparent"
+                onClick={() => editor.chain().focus().unsetColor().run()}
+              >
+                Remove Color
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
+
         <Button
           type="button"
           variant="ghost"

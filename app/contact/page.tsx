@@ -164,45 +164,54 @@ export default function ContactPage() {
             {/* Contact Information Cards */}
             <div className="grid sm:grid-cols-2 gap-6">
               {/* Phone Card */}
-              <Card className="p-5 text-start bg-card border-border hover:shadow-lg transition-shadow">
-                <div className="w-16 h-16 items-center justify-center flex gradient-card border border-gray-200 rounded-full">
+              <Card
+                className="p-5 text-start  gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:shadow-lg transition-shadow"
+              >
+                <div className="w-16 h-16 items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border border-gray-200 rounded-full">
                   <Phone className="w-8 h-8 text-primary" />
                 </div>
                 {/* FIX: Use flex to align text and button */}
                 <div className="flex items-center justify-start gap-2 mb-2">
-                  <h3 className="text-[24px] leading-[32px] font-[600] black-text">
+                  <h3 className="text-[24px] leading-[32px] font-[600] black-text  dark:text-[#CDD0DA]">
                     {loading ? "..." : phone}
                   </h3>
                   {/* Individual Copy Button for Phone */}
                   {!loading && <CopyButton textToCopy={phone} />}
                 </div>
-                <p className="text-[16px] leading-[30px] gray-text">
+                <p className="text-[16px] leading-[30px] gray-text   dark:text-[#858B9B]">
                   Phone Number
                 </p>
               </Card>
 
               {/* Email Card */}
-              <Card className="p-5 text-start bg-card border-border hover:shadow-lg transition-shadow">
-                <div className="w-16 h-16 items-center justify-center flex gradient-card border border-gray-200 rounded-full">
+              <Card
+                className="p-5 text-start  gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:shadow-lg transition-shadow"
+              >
+                <div className="w-16 h-16 items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border border-gray-200 rounded-full">
                   <Mail className="w-8 h-8 text-primary" />
                 </div>
                 {/* FIX: Use flex to align text and button, ensuring responsive truncation */}
                 <div className="flex items-center justify-start gap-2 mb-2">
                   {/* Email text uses flex-grow and truncate to ensure it handles long addresses */}
-                  <h3 className="text-[24px] leading-[32px] font-[600] black-text max-w-full overflow-hidden truncate flex-grow">
+                  <h3 className="text-[24px] leading-[32px] font-[600] black-text  dark:text-[#CDD0DA] max-w-full overflow-hidden truncate flex-grow">
                     {loading ? "..." : email}
                   </h3>
                   {/* Individual Copy Button for Email */}
                   {!loading && <CopyButton textToCopy={email} />}
                 </div>
-                <p className="text-[16px] leading-[30px] gray-text">
+                <p className="text-[16px] leading-[30px] gray-text   dark:text-[#858B9B]">
                   My Contact Mail
                 </p>
               </Card>
             </div>
 
             {/* Map Section */}
-            <Card className="p-4 sm:p-6 lg:p-2 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1">
+            <Card
+              className="p-4 sm:p-6 lg:p-2 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
+            >
               <div className="space-y-4">
                 <div className="relative h-80 bg-muted rounded-lg overflow-hidden">
                   <iframe
@@ -221,13 +230,16 @@ export default function ContactPage() {
           </div>
 
           {/* Right Side - Contact Form */}
-          <Card className="p-4 sm:p-6 lg:px-7 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1">
+          <Card
+            className="p-4 sm:p-6 lg:px-7 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
+          >
             <div className="">
               <div className="mb-8">
-                <h2 className="text-[24px] font-[700] black-text leading-[32px] mb-2">
+                <h2 className="text-[24px] font-[700] black-text  dark:text-[#CDD0DA] leading-[32px] mb-2">
                   Send an E-mail
                 </h2>
-                <p className="text-[16px] gray-text leading-[30px]">
+                <p className="text-[16px] gray-text   dark:text-[#858B9B] leading-[30px]">
                   for your inquiry and ideas
                 </p>
               </div>
@@ -242,7 +254,7 @@ export default function ContactPage() {
                       placeholder="Name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="h-12 bg-background border-border focus:border-none rounded-full placeholder:text-gray-400 p-6"
+                      className="h-12 bg-background  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 focus:border-none rounded-full placeholder:text-gray-400 p-6"
                       required
                     />
                   </div>
@@ -253,7 +265,7 @@ export default function ContactPage() {
                       placeholder="Email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="h-12 bg-background border-border rounded-full placeholder:text-gray-400 p-6"
+                      className="h-12 bg-background rounded-full dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 placeholder:text-gray-400 p-6"
                       required
                     />
                   </div>
@@ -267,7 +279,7 @@ export default function ContactPage() {
                     placeholder="Budget"
                     value={formData.budget}
                     onChange={handleInputChange}
-                    className="h-12 bg-background border-border rounded-full placeholder:text-gray-400 p-6"
+                    className="h-12 bg-background rounded-full dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 placeholder:text-gray-400 p-6"
                     required
                   />
                 </div>
@@ -279,7 +291,7 @@ export default function ContactPage() {
                     placeholder="Tell me about the project..."
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="min-h-32 bg-background border-border resize-none placeholder:text-gray-400 rounded-2xl p-5"
+                    className="min-h-32 bg-background  resize-none dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 placeholder:text-gray-400 rounded-2xl p-5"
                     required
                   />
                 </div>

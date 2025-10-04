@@ -4,7 +4,7 @@ import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/navbar/NavBar";
 import { Footer } from "@/components/footer/footer";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/context/theme-context";
 
 const bricolageGrotesque = Bricolage_Grotesque({
   variable: "--font-bricolage-grotesque",
@@ -25,13 +25,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`bg-[#f2f4f6]  ${bricolageGrotesque.variable} antialiased`}
+        className={`bg-[#F5F7F9] dark:bg-[#1A1A1A] ${bricolageGrotesque.variable} antialiased`}
       >
-        <Header />
-        <div className=" sm:w-[90vw] lg:max-w-[1440px] sm:mx-auto mt-10 lg:mt-20 ">
-          {children}
-        </div>
-        <Footer />
+        <ThemeProvider>
+          <Header />
+          <div className=" sm:w-[90vw] lg:max-w-[1440px] sm:mx-auto mt-10 lg:mt-20 ">
+            {children}
+          </div>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

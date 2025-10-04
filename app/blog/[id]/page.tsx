@@ -64,7 +64,7 @@ export default function BlogDetailPage({
                   {blogPost.tags && blogPost.tags.length > 0 && (
                     <Badge
                       variant="outline"
-                      className="text-[14px] leading-[20px] font-[400] cursor-pointer px-5 py-2 hover:bg-[#2F3236] hover:text-white transition-colors rounded-full bg-white border-none"
+                      className="text-[14px] leading-[20px] font-[400] cursor-pointer px-5 py-2 hover:bg-[#2F3236] dark:bg-[#2F3236] hover:text-white transition-colors rounded-full bg-white border-none"
                     >
                       {blogPost.tags[0]}
                     </Badge>
@@ -93,7 +93,7 @@ export default function BlogDetailPage({
               {/* Article Content */}
               <div className="prose prose-lg prose-headings:text-foreground prose-p:text-muted-foreground max-w-none">
                 <div
-                  className="text-[16px] leading-[30px] gray-text font-[400] rich-text-content"
+                  className="text-[16px] leading-[30px] gray-text dark:text-[#858B9B] font-[400] rich-text-content"
                   dangerouslySetInnerHTML={{ __html: blogPost.content }}
                 />
               </div>
@@ -109,7 +109,7 @@ export default function BlogDetailPage({
                       <Badge
                         key={index}
                         variant="outline"
-                        className="text-[14px] leading-[20px] font-[400] cursor-pointer px-5 py-2 hover:bg-[#2F3236] hover:text-white transition-colors rounded-full"
+                        className="text-[14px] leading-[20px] font-[400] cursor-pointer px-5 py-2 hover:bg-[#2F3236] dark:bg-[#2F3236] hover:text-white transition-colors rounded-full"
                       >
                         {tag}
                       </Badge>
@@ -120,7 +120,7 @@ export default function BlogDetailPage({
                   <Button
                     variant="outline"
                     size="lg"
-                    className="gap-2 rounded-full px-5 py-2 hover:bg-[#2F3236] hover:text-white transition-colors bg-transparent"
+                    className="gap-2 rounded-full px-5 py-2 hover:bg-[#2F3236] dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] dark:text-white hover:text-white transition-colors bg-transparent"
                     onClick={() => {
                       navigator.clipboard.writeText(window.location.href);
                     }}
@@ -131,7 +131,7 @@ export default function BlogDetailPage({
                   <Button
                     variant="outline"
                     size="lg"
-                    className="gap-2 rounded-full px-5 py-2 hover:bg-[#2F3236] hover:text-white transition-colors bg-transparent"
+                    className="gap-2 rounded-full px-5 py-2 hover:bg-[#2F3236] hover:text-white dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] dark:text-white transition-colors bg-transparent"
                   >
                     <Share2 className="h-4 w-4" />
                   </Button>

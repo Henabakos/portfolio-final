@@ -52,13 +52,16 @@ export default function ProjectDetailPage({
     <div className="min-h-screen text-foreground">
       <main className="container mx-auto px-4 py-8">
         {/* Project Header */}
-        <Card className="p-4 sm:p-6 lg:p-10 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1">
+        <Card
+          className="p-4 sm:p-6 lg:p-10 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-5">
             <div className="lg:col-span-2">
-              <h1 className="text-[32px] lg:text-[48px] leading-[40px] lg:leading-[48px]  font-bold mb-6 text-balance black-text">
+              <h1 className="text-[32px] lg:text-[48px] leading-[40px] lg:leading-[48px]  font-bold mb-6 text-balance black-text  dark:text-[#CDD0DA]    ">
                 {project.title}
               </h1>
-              <p className="text-[18px] gray-text leading-[33.75px]">
+              <p className="text-[18px] gray-text dark:text-[#858B9B] leading-[33.75px]">
                 {project.description}
               </p>
             </div>
@@ -66,7 +69,7 @@ export default function ProjectDetailPage({
             <div className="space-y-6">
               {project.serviceArea && project.serviceArea.length > 0 && (
                 <div>
-                  <h3 className="text-[16px] leading-[30px] gray-text mb-3">
+                  <h3 className="text-[16px] leading-[30px] gray-text dark:text-[#858B9B] mb-3">
                     Service Area
                   </h3>
                   <ul className="space-y-2">
@@ -74,7 +77,7 @@ export default function ProjectDetailPage({
                       (service: string, index: number) => (
                         <li
                           key={index}
-                          className="flex items-center text-[18px] leading-[30px] black-text font-[600]"
+                          className="flex items-center text-[18px] leading-[30px] black-text  dark:text-[#CDD0DA]  font-[600]"
                         >
                           <div className="w-1.5 h-1.5 bg-foreground rounded-full mr-3" />
                           {service}
@@ -94,7 +97,7 @@ export default function ProjectDetailPage({
                 <p className="text-[14px] text-gray-400 mb-1 uppercase">
                   CLIENT NAME
                 </p>
-                <p className="font-[400] text-[18px] leading-[30px] black-text">
+                <p className="font-[400] text-[18px] leading-[30px] black-text  dark:text-[#CDD0DA]">
                   {project.client}
                 </p>
               </div>
@@ -102,7 +105,7 @@ export default function ProjectDetailPage({
             {project.timeline && (
               <div>
                 <p className="text-sm text-muted-foreground mb-1">TIMELINE</p>
-                <p className="font-[400] text-[18px] leading-[30px] black-text">
+                <p className="font-[400] text-[18px] leading-[30px] black-text  dark:text-[#CDD0DA]">
                   {project.timeline}
                 </p>
               </div>
@@ -111,7 +114,7 @@ export default function ProjectDetailPage({
               <Button
                 asChild
                 variant={"outline"}
-                className="rounded-full px-20 py-5 w-[250px] border text-[#2F3236] hover:bg-[#2F3236] hover:text-white transition-all duration-300 bg-transparent flex items-center justify-center border-[#2F3236]/50"
+                className="rounded-full dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] dark:hover:bg-white  dark:text-white px-20 py-5 w-[250px] border text-[#2F3236] hover:bg-[#2F3236] hover:text-white transition-all duration-300 bg-transparent flex items-center justify-center border-[#2F3236]/50"
               >
                 <a
                   href={project.link}
@@ -141,24 +144,27 @@ export default function ProjectDetailPage({
         <div className="w-full mx-auto space-y-12">
           {project.introduction && (
             <section>
-              <h2 className="text-[24px] leading-[32px] font-bold mb-4 black-text">
+              <h2 className="text-[24px] leading-[32px] font-bold mb-4 black-text  dark:text-[#CDD0DA]">
                 Introduction
               </h2>
               <div
-                className="text-[16px] leading-[30px] gray-text font-[400] prose prose-lg max-w-none"
+                className="text-[16px] leading-[30px] gray-text dark:text-[#858B9B] font-[400] prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: project.introduction }}
               />
             </section>
           )}
 
           {project.goal && (
-            <Card className="p-4 sm:p-6 lg:p-10 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1">
+            <Card
+              className="p-4 sm:p-6 lg:p-10 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
+            >
               <section>
-                <h2 className="text-[24px] leading-[32px] font-bold mb-4 black-text">
+                <h2 className="text-[24px] leading-[32px] font-bold mb-4 black-text  dark:text-[#CDD0DA]">
                   Goal
                 </h2>
                 <div
-                  className="text-[16px] leading-[30px] gray-text font-[400] prose prose-lg max-w-none"
+                  className="text-[16px] leading-[30px] gray-text dark:text-[#858B9B] font-[400] prose prose-lg max-w-none"
                   dangerouslySetInnerHTML={{ __html: project.goal }}
                 />
               </section>
@@ -167,11 +173,11 @@ export default function ProjectDetailPage({
 
           {project.challenge && (
             <section>
-              <h2 className="text-[24px] leading-[32px] font-bold mb-4 black-text">
+              <h2 className="text-[24px] leading-[32px] font-bold mb-4 black-text  dark:text-[#CDD0DA]">
                 Challenge
               </h2>
               <div
-                className="text-[16px] leading-[30px] gray-text font-[400] prose prose-lg max-w-none"
+                className="text-[16px] leading-[30px] gray-text dark:text-[#858B9B] font-[400] prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: project.challenge }}
               />
 
@@ -205,16 +211,17 @@ export default function ProjectDetailPage({
                 {project.outcomes.map((outcome: any, index: number) => (
                   <Card
                     key={index}
-                    className="p-4 sm:p-6 lg:p-10 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
+                    className="p-4 sm:p-6 lg:p-10 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
                   >
                     <div>
-                      <div className="text-4xl lg:text-[48px] leading-[48px] font-[700] black-text mb-2">
+                      <div className="text-4xl lg:text-[48px] leading-[48px] font-[700] black-text  dark:text-[#CDD0DA] mb-2">
                         {outcome.percentage}
                       </div>
-                      <h3 className="text-[20px] leading-[24px] font-[600] black-text mb-2">
+                      <h3 className="text-[20px] leading-[24px] font-[600] black-text  dark:text-[#CDD0DA] mb-2">
                         {outcome.title}
                       </h3>
-                      <p className="text-[16px] leading-[30px] gray-text font-[400]">
+                      <p className="text-[16px] leading-[30px] gray-text dark:text-[#858B9B] font-[400]">
                         {outcome.description}
                       </p>
                     </div>
@@ -225,7 +232,10 @@ export default function ProjectDetailPage({
           )}
 
           {project.testimonial && (
-            <Card className="p-4 sm:p-6 lg:p-10 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1">
+            <Card
+              className="p-4 sm:p-6 lg:p-10 gradient-card  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
+            >
               <section>
                 <div className="flex flex-col md:flex-row gap-6 items-start">
                   {project.testimonial.image && (
@@ -243,11 +253,11 @@ export default function ProjectDetailPage({
                     <div className="text-4xl text-muted-foreground mb-4">
                       <Quote />
                     </div>
-                    <blockquote className="text-[18px] leading-[33.75px] font-[400] mb-4 gray-text">
+                    <blockquote className="text-[18px] leading-[33.75px] font-[400] mb-4 gray-text dark:text-[#858B9B]">
                       {project.testimonial.quote}
                     </blockquote>
                     <div>
-                      <p className="text-[18px] leading-[30px] font-[600] black-text">
+                      <p className="text-[18px] leading-[30px] font-[600] black-text  dark:text-[#CDD0DA]">
                         {project.testimonial.author}
                       </p>
                       <p className="text-[14px] leading-[20px] font-[400] text-gray-400">
@@ -262,11 +272,11 @@ export default function ProjectDetailPage({
 
           {project.conclusion && (
             <section>
-              <h2 className="text-[24px] leading-[32px] font-bold mb-4 black-text">
+              <h2 className="text-[24px] leading-[32px] font-bold mb-4 black-text  dark:text-[#CDD0DA]">
                 Conclusion
               </h2>
               <div
-                className="text-[16px] leading-[30px] gray-text font-[400] prose prose-lg max-w-none"
+                className="text-[16px] leading-[30px] gray-text dark:text-[#858B9B] font-[400] prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: project.conclusion }}
               />
             </section>
@@ -276,7 +286,7 @@ export default function ProjectDetailPage({
           <div className="text-center pt-8">
             <Button
               asChild
-              className="bg-white/50 text-[#2F3236] hover:bg-[#2F3236] hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-[14px] sm:text-base"
+              className="bg-white/50 text-[#2F3236] hover:bg-[#2F3236] dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] dark:text-white hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-[14px] sm:text-base"
             >
               <a href="/projects">Back to Projects</a>
             </Button>

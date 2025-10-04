@@ -1,12 +1,13 @@
 "use client";
 
+import type React from "react";
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Star,
-  ArrowRight,
   CheckCheck,
   Layout,
   Atom,
@@ -30,7 +31,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { LoadingScreen } from "@/components/loading-screen";
-import emailjs from "@emailjs/browser";
+import { sendEmail } from "@/app/actions/send-email";
 import { CustomArrow } from "@/components/custom-arrow";
 
 interface Service {
@@ -79,14 +80,13 @@ interface About {
   resumeLink: string;
 }
 
-// Define a safe initial state
 const initialAboutState: About = {
   id: "",
   name: "Henok Assefa",
   title: "Versatile Designer",
   bio: "A creative and versatile digital designer with over twelve years of experience...",
-  profileImage: "/user.jpg", // Fallback image
-  resumeLink: "#", // Fallback link
+  profileImage: "/user.jpg",
+  resumeLink: "#",
 };
 
 const getIconComponent = (iconName: string) => {
@@ -191,24 +191,27 @@ export default function AboutPage() {
     setFormStatus({ type: null, message: "" });
 
     try {
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          budget: formData.budget,
-          message: formData.message,
-        },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
-      setFormStatus({
-        type: "success",
-        message: "Your message has been sent successfully!",
+      const result = await sendEmail({
+        name: formData.name,
+        email: formData.email,
+        budget: formData.budget,
+        message: formData.message,
       });
-      setFormData({ name: "", email: "", budget: "", message: "" });
+
+      if (result.success) {
+        setFormStatus({
+          type: "success",
+          message: result.message,
+        });
+        setFormData({ name: "", email: "", budget: "", message: "" });
+      } else {
+        setFormStatus({
+          type: "error",
+          message: result.message,
+        });
+      }
     } catch (error) {
-      console.error("Error sending email:", error);
+      console.error("Error submitting form:", error);
       setFormStatus({
         type: "error",
         message: "Failed to send message. Please try again later.",
@@ -224,22 +227,35 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen mx-5 sm:mx-0">
-      <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-5 flex-1">
+      <Card
+        className="
+    p-4 sm:p-6 lg:p-8
+    rounded-2xl
+    gradient-card
+    dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+                 
+    hover:border-gray-100/10
+    transition-all duration-300
+    hover:scale-[1.02]
+    group
+    mb-4 sm:mb-5 flex-1
+  "
+      >
         <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center">
           {/* Text content */}
           <div className="space-y-4 md:space-y-6 order-2 md:order-1">
             <div className="space-y-1">
-              <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-bold text-gray-900">
+              <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-bold text-gray-900 dark:text-[#CDD0DA]">
                 Henok Assefa
               </h1>
-              <p className="text-[18px] lg:text-[24px] text-gray-600">
+              <p className="text-[18px] lg:text-[24px] text-gray-600 dark:text-[#858B9B]">
                 Versatile Designer
               </p>
             </div>
-            <p className="text-[#6E737B] leading-[33.75px] text-[14px] lg:text-[18px] font-normal max-w-prose">
+            <p className="text-[#6E737B] dark:text-[#858B9B] leading-[33.75px] text-[14px] lg:text-[18px] font-normal max-w-prose">
               A creative and versatile digital designer with over three years of
               experience in{" "}
-              <span className="text-[#2F3236] border border-gray-200 px-2 py-1 rounded-md font-normal">
+              <span className="text-[#2F3236] dark:text-white border border-gray-200 dark:border-white/20 shadow-sm px-2 py-1 rounded-xl font-normal">
                 designing and developing
               </span>{" "}
               engaging digital media for various platforms and audiences.
@@ -247,13 +263,13 @@ export default function AboutPage() {
               a lasting impact.
             </p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-              <div className="flex items-center gap-2 text-[#6E737B] ">
+              <div className="flex items-center gap-2 text-[#6E737B] dark:text-[#858B9B] ">
                 <CheckCheck className="w-5 h-5" />
                 <span className="text-[14px] lg:text-[18px]">
                   Available for work
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-[#6E737B]">
+              <div className="flex items-center gap-2 text-[#6E737B] dark:text-[#858B9B]">
                 <CheckCheck className="w-5 h-5" />
                 <span className="text-[14px] lg:text-[18px]">
                   Full Time Job
@@ -261,11 +277,11 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="flex gap-4">
-              <Button className="bg-white/50 text-[#2F3236] hover:bg-[#2F3236] hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-[14px] sm:text-base">
+              <Button className="bg-white/50 text-[#2F3236] hover:bg-[#2F3236] dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] dark:text-white hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-[14px] sm:text-base">
                 Get in Touch
               </Button>
               <Link href={about.resumeLink}>
-                <Button className="bg-white/50 text-[#2F3236] hover:bg-[#2F3236] hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-sm sm:text-base">
+                <Button className="bg-white/50 text-[#2F3236] hover:bg-[#2F3236] dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] dark:text-white hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-[14px] sm:text-base">
                   My Resume
                 </Button>
               </Link>
@@ -274,11 +290,12 @@ export default function AboutPage() {
 
           {/* Image (on top in small, right in large) */}
           <div className="flex justify-center md:justify-end order-1 md:order-2 w-full mt-1 md:mt-0">
-            <div className="relative w-full max-w-full sm:max-w-[360px] md:max-w-[320px] lg:max-w-[480px] aspect-square ">
+            <div className="relative w-full max-w-full sm:max-w-[360px] md:max-w-[320px] lg:max-w-[480px] aspect-square">
               <img
                 src={about.profileImage || "user.jpg"}
                 alt="Henok Assefa"
-                className="w-full aspect-square rounded-2xl object-cover bg-[#CDD0DA]"
+                className="w-full aspect-square rounded-2xl object-cover bg-[#CDD0DA] dark:bg-[#2F3236]
+               grayscale contrast-[120%] brightness-[90%]"
               />
             </div>
           </div>
@@ -288,9 +305,23 @@ export default function AboutPage() {
       {/* Experience & Education */}
       <div className="grid lg:grid-cols-2 gap-8 mb-10">
         {/* Experience - Now fetching from database */}
-        <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-5 flex-1">
+        <Card
+          className="
+    p-4 sm:p-6 lg:p-8
+    rounded-2xl
+    gradient-card
+    dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2
+    hover:border-gray-100/10
+    transition-all duration-300
+    hover:scale-[1.02]
+    group
+    mb-4 sm:mb-5 flex-1
+  "
+        >
+          {" "}
           <div>
-            <h2 className="text-2xl sm:text-3xl font-semibold black-text mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-semibold black-text mb-6 sm:mb-8 dark:text-[#CDD0DA]">
               My Experience
             </h2>
             <div className="space-y-6 sm:space-y-8">
@@ -299,7 +330,7 @@ export default function AboutPage() {
                   key={exp.id}
                   className="flex flex-col md:flex-row items-start gap-4 sm:gap-6 lg:gap-8 p-2"
                 >
-                  <div className="w-12 h-12 sm:w-20 sm:h-20 gradient-card border border-[#f5f7f9] rounded-full flex items-center justify-center p-3 sm:p-4 flex-shrink-0 overflow-hidden">
+                  <div className="w-12 h-12 sm:w-20 sm:h-20 gradient-card dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] border border-[#f5f7f9] rounded-full flex items-center justify-center p-3 sm:p-4 flex-shrink-0 overflow-hidden">
                     {exp.logo ? (
                       <img
                         src={exp.logo || "/placeholder.svg"}
@@ -307,11 +338,11 @@ export default function AboutPage() {
                         className="w-full h-full object-contain"
                       />
                     ) : (
-                      <div className="w-6 h-6 bg-gray-400 rounded-full"></div>
+                      <div className="w-6 h-6 bg-gray-400  rounded-full"></div>
                     )}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold black-text mb-1 text-base sm:text-lg">
+                    <h3 className="font-bold black-text mb-1 text-base sm:text-lg dark:text-[#CDD0DA]">
                       {exp.company}
                     </h3>
                     <p className="gray-text mb-2 text-sm sm:text-base font-semibold">
@@ -320,7 +351,7 @@ export default function AboutPage() {
                     <p className="text-xs sm:text-sm text-gray-400 mb-4 sm:mb-6">
                       {exp.period}
                     </p>
-                    <p className="gray-text text-sm sm:text-base leading-[30px]">
+                    <p className="gray-text text-sm sm:text-base leading-[30px]  dark:text-[#858B9B]">
                       {exp.description}
                     </p>
                   </div>
@@ -331,9 +362,23 @@ export default function AboutPage() {
         </Card>
 
         {/* Education - Now fetching from database */}
-        <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-5 flex-1">
+        <Card
+          className="
+    p-4 sm:p-6 lg:p-8
+    rounded-2xl
+    gradient-card
+    dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2
+    hover:border-gray-100/10
+    transition-all duration-300
+    hover:scale-[1.02]
+    group
+    mb-4 sm:mb-5 flex-1
+  "
+        >
+          {" "}
           <div>
-            <h2 className="text-2xl sm:text-3xl font-semibold black-text mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-semibold black-text mb-6 sm:mb-8 dark:text-[#CDD0DA]">
               My Education
             </h2>
             <div className="space-y-6 sm:space-y-8">
@@ -342,7 +387,7 @@ export default function AboutPage() {
                   key={edu.id}
                   className="flex flex-col md:flex-row items-start gap-4 sm:gap-6 lg:gap-8 p-2"
                 >
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 gradient-card border border-[#f5f7f9] rounded-full flex items-center justify-center p-3 sm:p-4 flex-shrink-0 overflow-hidden">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 gradient-card dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] border border-[#f5f7f9] rounded-full flex items-center justify-center p-3 sm:p-4 flex-shrink-0 overflow-hidden">
                     {edu.logo ? (
                       <img
                         src={edu.logo || "/placeholder.svg"}
@@ -354,7 +399,7 @@ export default function AboutPage() {
                     )}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold black-text mb-1 text-base sm:text-lg">
+                    <h3 className="font-bold black-text mb-1 text-base sm:text-lg dark:text-[#CDD0DA]">
                       {edu.institution}
                     </h3>
                     <p className="gray-text mb-2 text-sm sm:text-base font-semibold">
@@ -363,7 +408,7 @@ export default function AboutPage() {
                     <p className="text-xs sm:text-sm text-gray-400 mb-4 sm:mb-6">
                       {edu.period}
                     </p>
-                    <p className="gray-text text-sm sm:text-base leading-[30px]">
+                    <p className="gray-text text-sm sm:text-base leading-[30px]  dark:text-[#858B9B]">
                       {edu.description}
                     </p>
                   </div>
@@ -376,8 +421,12 @@ export default function AboutPage() {
 
       {/* Stats Section */}
       <div className="grid lg:grid-cols-2 gap-8">
-        <Card className="p-0">
-          <div className="grid grid-cols-2 divide-x divide-y divide-black/5 h-full">
+        <Card
+          className="p-0  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2
+    hover:border-gray-100/10"
+        >
+          <div className="grid grid-cols-2 divide-x divide-y divide-black/5 dark:divide-white/5 h-full">
             {[
               { value: "4", label: "Years of Experience" },
               { value: "100+", label: "Projects Complete" },
@@ -388,7 +437,7 @@ export default function AboutPage() {
                 key={index}
                 className="flex flex-col items-center justify-center space-y-2 p-6 sm:p-10 lg:p-14"
               >
-                <div className="text-4xl sm:text-4xl lg:text-5xl font-bold black-text">
+                <div className="text-4xl sm:text-4xl lg:text-5xl font-bold black-text dark:text-[#CDD0DA]">
                   {item.value}
                 </div>
                 <p className="text-[14px] sm:text-lg lg:text-xl gray-text text-center whitespace-nowrap">
@@ -399,8 +448,12 @@ export default function AboutPage() {
           </div>
         </Card>
 
-        <Card className="p-0">
-          <div className="grid grid-cols-2 divide-x divide-y divide-black/8">
+        <Card
+          className="p-0 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2
+    hover:border-gray-100/10"
+        >
+          <div className="grid grid-cols-2 divide-x divide-y divide-black/8 dark:divide-white/5">
             {[
               {
                 icon: "W",
@@ -433,7 +486,7 @@ export default function AboutPage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="flex flex-col items-center justify-center p-6 sm:p-8 lg:p-16 hover:bg-gray-50 transition-colors"
+                className="flex flex-col items-center justify-center p-6 sm:p-8 lg:p-16 transition-colors"
               >
                 <div
                   className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center mx-auto mb-4`}
@@ -444,10 +497,10 @@ export default function AboutPage() {
                     {item.icon}
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                <p className="text-xs sm:text-sm text-gray-600 mb-1  dark:text-[#858B9B]">
                   {item.label}
                 </p>
-                <p className="font-semibold text-gray-900 text-sm sm:text-md">
+                <p className="font-semibold text-gray-900 text-sm sm:text-md dark:text-[#CDD0DA]">
                   {item.value}
                 </p>
               </div>
@@ -457,9 +510,13 @@ export default function AboutPage() {
       </div>
 
       {/* Services Section - Now fetching from database */}
-      <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-5 flex-1 mt-10">
+      <Card
+        className="p-4 sm:p-6 lg:p-8  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2
+    hover:border-gray-100/10 transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-5 flex-1 mt-10"
+      >
         <div className="mb-20">
-          <h2 className="text-[30px] font-semibold black-text mb-8">
+          <h2 className="text-[30px] font-semibold black-text mb-8 dark:text-[#CDD0DA]">
             My Services
           </h2>
           <Link href={"/services"}>
@@ -469,21 +526,27 @@ export default function AboutPage() {
                 return (
                   <div
                     key={service.id}
-                    className="flex flex-col sm:flex-row items-start justify-between border-b border-b-gray-200 last:border-b-0 pb-8 hover:text-[#2f3236]"
+                    className="flex flex-col sm:flex-row items-start justify-between border-b border-b-gray-200 dark:border-b-white/5 last:border-b-0 pb-8 hover:text-[#2f3236] dark:hover:text-white transition-colors cursor-pointer"
                   >
-                    <div className="flex flex-col sm:flex-row flex-1 gap-4 sm:gap-12 lg:gap-40 gray-text hover:text-[#2f3236] text-[16px] leading-[28px]">
-                      {/* Left side (icon + title) */}
-                      <div className="flex items-center gap-4 min-w-[200px]">
-                        <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                    <div className="flex flex-col sm:flex-row flex-1 gap-4 sm:gap-12 lg:gap-40 gray-text hover:text-[#2f3236] text-[16px] leading-[28px] dark:text-[#858B9B] dark:hover:text-white">
+                      {/* Left side (icon + text content) */}
+                      <div className="flex gap-4 min-w-[200px]">
+                        {/* Icon */}
+                        <div className="w-12 h-12 bg-gray-100 dark:bg-background/30 rounded-xl flex items-center justify-center">
                           <IconComponent className="h-7 w-7" />
                         </div>
-                        <h3 className="font-bold text-lg">{service.name}</h3>
+
+                        {/* Title + Description stacked */}
+                        <div className="flex flex-col">
+                          <h3 className="font-bold text-lg">{service.name}</h3>
+                          <p className="text-[14px] sm:text-[16px] leading-[30px]">
+                            {service.description}
+                          </p>
+                        </div>
                       </div>
-                      {/* Description */}
-                      <p className="flex-1 text-[14px] sm:text-[16px] leading-[30px]">
-                        {service.description}
-                      </p>
-                      <CustomArrow className="hidden sm:block h-10 w-10 shrink-0 " />
+
+                      {/* Arrow on the right */}
+                      <CustomArrow className="hidden sm:block h-10 w-10 shrink-0" />
                     </div>
                   </div>
                 );
@@ -499,7 +562,9 @@ export default function AboutPage() {
           {testimonials.map((testimonial) => (
             <Card
               key={testimonial.id}
-              className="border-0 shadow-sm bg-white/50"
+              className=" shadow-sm  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2
+    hover:border-gray-100/10"
             >
               <CardContent className="p-6">
                 <div className="text-4xl text-gray-300 mb-4 ">
@@ -517,7 +582,7 @@ export default function AboutPage() {
                   {testimonial.content}
                 </p>
                 <div>
-                  <p className="font-semibold text-[20px] black-text">
+                  <p className="font-semibold text-[20px] black-text dark:text-[#CDD0DA]">
                     {testimonial.name}
                   </p>
                   <p className="text-[15.04px] gray-text leading-[24px]">
@@ -532,47 +597,47 @@ export default function AboutPage() {
 
       {/* Social Media Links */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-        <Card className="border-0 shadow-sm bg-white/50 flex p-6">
+        <Card className="border-0 shadow-sm bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border-[#252627] flex p-6">
           <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
-            <div className="w-16 h-16 bg-pink-100 items-center justify-center flex gradient-card border border-gray-200 rounded-full">
-              <Github className="w-6 h-6 black-text" />{" "}
+            <div className="w-16 h-16  items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border dark:border-gray-100/2 border border-gray-200 rounded-full shadow-sm">
+              <Github className="w-6 h-6 black-text dark:text-[#CDD0DA]" />{" "}
             </div>
-            <div className="text-center">
-              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text">
+            <div className="text-start">
+              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text dark:text-[#CDD0DA]">
                 Github
               </h3>
-              <p className="text-sm gray-text text-[16px] leading-[30px]">
+              <p className="text-sm gray-text text-[16px] leading-[30px]  text-[#858B9B]">
                 Henabakos
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-white/50 flex p-6">
+        <Card className="border-0 shadow-sm bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border-[#252627] flex p-6">
           <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
-            <div className="w-16 h-16 bg-pink-100 items-center justify-center flex gradient-card border border-gray-200 rounded-full">
-              <Linkedin className="w-6 h-6 black-text" />
+            <div className="w-16 h-16  items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border dark:border-gray-100/2 border border-gray-200 rounded-full shadow-sm">
+              <Linkedin className="w-6 h-6 black-text dark:text-[#CDD0DA]" />
             </div>
-            <div className="text-center">
-              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text">
+            <div className="text-start">
+              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text dark:text-[#CDD0DA]">
                 Linkedin
               </h3>
-              <p className="text-sm gray-text text-[16px] leading-[30px]">
+              <p className="text-sm gray-text text-[16px] leading-[30px] text-[#858B9B]">
                 Henok Assefa
               </p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm bg-white/50 flex p-6">
+        <Card className="border-0 shadow-sm bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border-[#252627]  flex p-6">
           <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
-            <div className="w-16 h-16 bg-pink-100 items-center justify-center flex gradient-card border border-gray-200 rounded-full">
-              <Instagram className="w-6 h-6 black-text" />{" "}
+            <div className="w-16 h-16  items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border dark:border-gray-100/2 border border-gray-200 rounded-full shadow-sm">
+              <Instagram className="w-6 h-6 black-text dark:text-[#CDD0DA]" />{" "}
             </div>
-            <div className="text-center">
-              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text">
+            <div className="text-start">
+              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text dark:text-[#CDD0DA]">
                 Instagram
               </h3>
-              <p className="text-sm gray-text">@henaman49</p>
+              <p className="text-sm gray-text text-[#858B9B]">@henaman49</p>
             </div>
           </CardContent>
         </Card>
@@ -580,25 +645,38 @@ export default function AboutPage() {
 
       {/* Contact Section */}
       <div className="mt-20">
-        <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-5 flex-1">
+        <Card
+          className="
+    p-4 sm:p-6 lg:p-8
+    rounded-2xl
+    gradient-card
+    dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2
+    hover:border-gray-100/10
+    transition-all duration-300
+    hover:scale-[1.02]
+    group
+    mb-4 sm:mb-5 flex-1
+  "
+        >
+          {" "}
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold black-text mb-4">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold black-text mb-4  dark:text-[#CDD0DA] ">
               Let's Work Together
             </h2>
-            <p className="text-[16px] lg:text-[18px] gray-text max-w-2xl mx-auto">
+            <p className="text-[16px] lg:text-[18px] gray-text max-w-2xl mx-auto text-[#858B9B]">
               Ready to bring your ideas to life? I'm available for freelance
               projects and full-time opportunities. Let's discuss how we can
               collaborate.
             </p>
           </div>
-
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
             {/* Contact Info */}
             <div className="space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-100 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] rounded-full shadow-md flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-gray-600"
+                    className="w-6 h-6 text-gray-600  dark:text-[#CDD0DA]  "
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -612,15 +690,19 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold black-text">Email</h3>
-                  <p className="gray-text">henogato9876@gmail.com</p>
+                  <h3 className="font-semibold black-text dark:text-[#CDD0DA]">
+                    Email
+                  </h3>
+                  <p className="gray-text text-[#858B9B]">
+                    henogato9876@gmail.com
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-100 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] rounded-full shadow-md flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-gray-600"
+                    className="w-6 h-6 text-gray-600  dark:text-[#CDD0DA]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -634,15 +716,17 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold black-text">Phone</h3>
-                  <p className="gray-text">+251945014531</p>
+                  <h3 className="font-semibold black-text dark:text-[#CDD0DA]">
+                    Phone
+                  </h3>
+                  <p className="gray-text text-[#858B9B]">+251945014531</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-100 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] rounded-full shadow-md flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-gray-600"
+                    className="w-6 h-6 text-gray-600  dark:text-[#CDD0DA]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -662,18 +746,26 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold black-text">Location</h3>
-                  <p className="gray-text">Addis Ababa, Ethiopia</p>
+                  <h3 className="font-semibold black-text dark:text-[#CDD0DA]">
+                    Location
+                  </h3>
+                  <p className="gray-text text-[#858B9B]">
+                    Addis Ababa, Ethiopia
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-100 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] rounded-full shadow-md flex items-center justify-center">
                   <CheckCheck className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold black-text">Availability</h3>
-                  <p className="gray-text">Available for new projects</p>
+                  <h3 className="font-semibold black-text dark:text-[#CDD0DA]">
+                    Availability
+                  </h3>
+                  <p className="gray-text text-[#858B9B]">
+                    Available for new projects
+                  </p>
                 </div>
               </div>
             </div>
@@ -685,7 +777,7 @@ export default function AboutPage() {
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Your Name"
-                className="bg-white/50 border-gray-200 focus:border-gray-400 rounded-full py-5"
+                className="bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border-white/5 border-gray-200 focus:border-gray-400 rounded-full py-5"
                 required
               />
               <Input
@@ -694,7 +786,7 @@ export default function AboutPage() {
                 onChange={handleInputChange}
                 placeholder="Your Email"
                 type="email"
-                className="bg-white/50 border-gray-200 focus:border-gray-400 rounded-full py-5"
+                className="bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 focus:border-gray-400 rounded-full py-5"
                 required
               />
               <Input
@@ -702,7 +794,7 @@ export default function AboutPage() {
                 value={formData.budget}
                 onChange={handleInputChange}
                 placeholder="Project Budget"
-                className="bg-white/50 border-gray-200 focus:border-gray-400 rounded-full py-5"
+                className="bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 focus:border-gray-400 rounded-full py-5"
               />
               <textarea
                 name="message"
@@ -710,7 +802,7 @@ export default function AboutPage() {
                 onChange={handleInputChange}
                 placeholder="Tell me about your project..."
                 rows={4}
-                className="w-full px-3 py-2 bg-white/50 border border-gray-200 rounded-md focus:border-gray-400 focus:outline-none resize-none"
+                className="w-full px-3 py-2 bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 dark border border-gray-200 rounded-md focus:border-gray-400 focus:outline-none resize-none"
                 required
               />
               {formStatus.message && (
@@ -726,7 +818,7 @@ export default function AboutPage() {
               )}
               <Button
                 type="submit"
-                className="w-full rounded-full bg-[#2F3236] text-white hover:bg-[#1a1d20] py-6"
+                className="w-full rounded-full bg-[#2F3236] dark:bg-[#CDD0DA] dark:text-black  dark:border-white/5 text-white hover:bg-[#1a1d20] py-6"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Sending..." : "Start a Project"}

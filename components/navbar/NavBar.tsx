@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/context/theme-context";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -42,9 +42,9 @@ export function Header() {
   return (
     <header
       className={`sticky top-0 z-50 w-auto mx-4 sm:w-[90vw] lg:max-w-[1440px] 
-        border-b border-border/40 !bg-white backdrop-blur 
+        border-b border-border/40 bg-background/95 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] backdrop-blur 
         supports-[backdrop-filter]:bg-background/60 md:mx-auto 
-        rounded-md shadow-md shadow-black/5 dark:shadow-white/5
+        rounded-md shadow-md shadow-black/5 dark:shadow-gray-500/4
         transition-all duration-300 
         ${scrolled ? "my-0" : "my-4"}`}
     >
@@ -70,8 +70,8 @@ export function Header() {
               href={item.href}
               className={`text-sm font-medium transition-colors ${
                 pathname.startsWith(item.href)
-                  ? "text-foreground font-semibold border border-border px-4 py-2 rounded-full hover:text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-foreground font-semibold border border-border dark:border-white/40 px-4 py-2 rounded-full hover:text-primary"
+                  : "text-muted-foreground dark:text-[#CDD0DA] hover:text-foreground"
               }`}
             >
               {item.name}
@@ -80,10 +80,10 @@ export function Header() {
         </nav>
 
         <div className="flex items-center space-x-4">
-          {/* <Button
+          <Button
             variant="ghost"
             size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={toggleTheme}
             className="h-9 w-9 bg-secondary border border-border rounded-full hover:bg-secondary/80 transition-colors"
           >
             {mounted && (
@@ -93,7 +93,7 @@ export function Header() {
               </>
             )}
             <span className="sr-only">Toggle theme</span>
-          </Button> */}
+          </Button>
           <Button
             variant="outline"
             onClick={() => (window.location.href = "/contact")}
@@ -106,7 +106,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden h-9 w-9 hover:bg-secondary/80 transition-colors hover:text-gray-700"
+                className="lg:hidden h-9 w-9 hover:bg-secondary/80 transition-colors"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>

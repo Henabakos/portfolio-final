@@ -148,41 +148,51 @@ export function BentoGrid() {
       {/* Column 1 */}
       <div className="flex flex-col h-full gap-5">
         <Link href="/about" className="flex-1">
-          <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full">
+          <Card
+            className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
+          >
             <div className="flex flex-col h-full space-y-4 sm:space-y-6">
               <div className="relative">
                 <img
                   src={about.profileImage || "/placeholder.svg"}
                   alt={about.name}
-                  className="w-full aspect-square rounded-2xl object-cover bg-[#F5F7F9]"
+                  className="w-full aspect-square rounded-2xl object-cover bg-[#fdfdfd] dark:bg-[#2F3236] 
+                 grayscale contrast-[120%] brightness-[90%]"
                 />
               </div>
             </div>
           </Card>
         </Link>
         <Link href="/about" className="flex-1">
-          <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full">
+          <Card
+            className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
+          >
             <div className="flex flex-col h-full space-y-4 sm:space-y-6">
               <div className="space-y-3">
                 <div className="flex flex-row justify-between gap-2">
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground dark:text-[#858B9B] ">
                     Hello there, I am
                   </p>
                   {about.available && (
-                    <div className="flex items-center gap-1 gradient-card black-text rounded-full border px-5 py-2 text-sm font-medium self-start sm:self-auto">
+                    <div
+                      className="flex items-center gap-1 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 black-text rounded-full  px-5 py-2 text-sm font-medium self-start sm:self-auto dark:text-[#CDD0DA]"
+                    >
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       Available for hire
                     </div>
                   )}
                 </div>
 
-                <h2 className="text-[36px] sm:text-[36px] font-bold">
+                <h2 className="text-[36px] sm:text-[36px] font-bold  dark:text-[#CDD0DA]">
                   {about.name}
                 </h2>
-                <p className="text-[16px] text-muted-foreground leading-relaxed">
+                <p className="text-[16px] text-muted-foreground leading-relaxed  dark:text-[#858B9B]">
                   As a{" "}
                   <span className="font-semibold text-foreground">
-                    {about.title.toLowerCase()}
+                    {about.title?.toLowerCase()}
                   </span>
                   , I specialize in creating magical visual identities for{" "}
                   <span className="font-semibold text-foreground">
@@ -194,7 +204,7 @@ export function BentoGrid() {
 
               <div className="flex justify-between items-center mt-auto">
                 <div className="space-y-2">
-                  <h2 className="text-base sm:text-lg font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold  dark:text-[#CDD0DA]">
                     About Myself
                   </h2>
                 </div>
@@ -205,7 +215,10 @@ export function BentoGrid() {
             </div>
           </Card>
         </Link>
-        <Card className="px-4 sm:px-6 lg:px-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group flex-1">
+        <Card
+          className="px-4 sm:px-6 lg:px-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group flex-1"
+        >
           {socials.map((social: any, index: number) => {
             const IconComponent = getIconComponent(social.icon);
             const isLast = index === socials.length - 1;
@@ -213,11 +226,11 @@ export function BentoGrid() {
               <Link href={social.url} key={social.platform}>
                 <div
                   className={`${
-                    !isLast ? "border-b border-border" : ""
+                    !isLast ? "border-b border-border dark:border-white/5" : ""
                   } py-3 sm:py-4 flex gap-3`}
                 >
                   <div className="flex items-center gap-3">
-                    <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 text-foreground bg-background rounded-full p-2 border border-border" />
+                    <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 text-foreground bg-background rounded-full p-2 border border-border dark:border-white/5" />
                   </div>
                   <div>
                     <span className="font-medium text-sm">
@@ -237,7 +250,10 @@ export function BentoGrid() {
       {/* Column 2 */}
       <div className="flex flex-col h-full gap-5">
         <Link href="/about" className="flex-1">
-          <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full">
+          <Card
+            className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
+          >
             <div className="flex gap-6 sm:gap-8 lg:gap-12 w-full items-center justify-center mt-3 sm:mt-5">
               {tools.map((tool: any) => {
                 const IconComponent = getIconComponent(tool.icon);
@@ -247,7 +263,7 @@ export function BentoGrid() {
                     className="text-center space-y-3 sm:space-y-5 lg:space-y-7"
                   >
                     <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto text-foreground font-light" />
-                    <p className="font-[400] text-sm sm:text-lg lg:text-[16px] text-muted-foreground leading-[30px]">
+                    <p className="font-[400] text-sm sm:text-lg lg:text-[16px] text-muted-foreground leading-[30px]  dark:text-[#CDD0DA]">
                       {tool.name}
                     </p>
                   </div>
@@ -260,7 +276,7 @@ export function BentoGrid() {
                 <p className="text-muted-foreground/60 text-xs sm:text-[14px]">
                   TOOLS AND TECHNOLOGY
                 </p>
-                <h2 className="text-base sm:text-lg font-semibold">
+                <h2 className="text-base sm:text-lg font-semibold  dark:text-[#CDD0DA]">
                   My Credentials
                 </h2>
               </div>
@@ -272,13 +288,21 @@ export function BentoGrid() {
         </Link>
 
         <Link href="/projects" className="flex-1">
-          <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full">
+          <Card
+            className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
+          >
             <div className="flex flex-col h-full space-y-4 sm:space-y-6">
               <div>
                 <img
                   src="/project-image.svg"
                   alt="Project showcase"
-                  className="w-full rounded-2xl object-contain"
+                  className="w-full rounded-2xl object-contain dark:hidden"
+                />
+                <img
+                  src="/project-image-dark.svg"
+                  alt="Project showcase"
+                  className="w-full rounded-2xl object-contain hidden dark:block"
                 />
               </div>
             </div>
@@ -298,10 +322,13 @@ export function BentoGrid() {
           </Card>
         </Link>
         <Link href="/about" className="flex-1">
-          <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full">
+          <Card
+            className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
+          >
             <div className="flex justify-center gap-8 sm:gap-12 lg:gap-16 mt-3">
               <div className="space-y-1 text-center">
-                <h3 className="text-3xl sm:text-4xl lg:text-[48px] font-bold">
+                <h3 className="text-3xl sm:text-4xl lg:text-[48px] font-bold  dark:text-[#CDD0DA]">
                   {about.experience}
                 </h3>
                 <p className="text-sm sm:text-[16px] text-muted-foreground">
@@ -310,7 +337,7 @@ export function BentoGrid() {
               </div>
 
               <div className="space-y-1 text-center">
-                <h3 className="text-3xl sm:text-4xl lg:text-[48px] font-bold">
+                <h3 className="text-3xl sm:text-4xl lg:text-[48px] font-bold  dark:text-[#CDD0DA]">
                   {about.projectsCount}
                 </h3>
                 <p className="text-sm sm:text-[16px] text-muted-foreground">
@@ -323,7 +350,7 @@ export function BentoGrid() {
                 <p className="text-muted-foreground/60 text-xs sm:text-[14px]">
                   CAREER STATS
                 </p>
-                <h2 className="text-base sm:text-lg font-semibold">
+                <h2 className="text-base sm:text-lg font-semibold  dark:text-[#CDD0DA]">
                   My Credentials
                 </h2>
               </div>
@@ -337,9 +364,12 @@ export function BentoGrid() {
 
       <div className="flex flex-col h-full gap-5">
         <Link href="/contact" className="flex-1">
-          <Card className="gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full">
+          <Card
+            className="gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
+          >
             <div className="flex flex-col h-full overflow-hidden">
-              <div className="w-[120%] overflow-hidden -rotate-4 bg-muted mt-3 sm:mt-5">
+              <div className="w-[120%] overflow-hidden -rotate-4 bg-muted dark:bg-[#2F3236]   mt-3 sm:mt-5">
                 <div className="flex animate-marquee whitespace-nowrap text-foreground/80 text-xs sm:text-sm md:text-base font-medium py-3 sm:py-4">
                   {about.skills?.map((skill: string, index: number) => (
                     <span key={index}>💡 {skill}&nbsp;–&nbsp;</span>
@@ -368,13 +398,21 @@ export function BentoGrid() {
         </Link>
 
         <Link href="/blog" className="flex-1">
-          <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full">
+          <Card
+            className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
+          >
             <div className="flex flex-col h-full space-y-4 sm:space-y-6">
               <div>
                 <img
                   src="/blog-img.svg"
-                  alt="Blog illustration"
-                  className="w-full rounded-2xl object-contain"
+                  alt="Project showcase"
+                  className="w-full rounded-2xl object-contain dark:hidden"
+                />
+                <img
+                  src="/blog-img-dark.svg"
+                  alt="Project showcase"
+                  className="w-full rounded-2xl object-contain hidden dark:block"
                 />
               </div>
             </div>
@@ -394,7 +432,10 @@ export function BentoGrid() {
           </Card>
         </Link>
         <Link href="/about" className="flex-1">
-          <Card className="p-4 sm:p-6 lg:p-8 gradient-card hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full">
+          <Card
+            className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
+          >
             <div className="flex flex-col h-full space-y-4 sm:space-y-6">
               <div className="grid grid-cols-2">
                 {services.slice(0, 4).map((service: any, index: number) => {
@@ -406,10 +447,16 @@ export function BentoGrid() {
                     <div
                       key={service.name}
                       className={`flex flex-col items-center justify-center space-y-2 p-3 sm:p-4 lg:p-6 ${
-                        isTopRow ? "border-b border-border" : ""
-                      } ${isLeftColumn ? "border-r border-border" : ""}`}
+                        isTopRow
+                          ? "border-b border-border dark:border-white/5"
+                          : ""
+                      } ${
+                        isLeftColumn
+                          ? "border-r border-border dark:border-white/5"
+                          : ""
+                      }`}
                     >
-                      <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-foreground" />
+                      <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-foreground  dark:text-[#CDD0DA]" />
                       <p className="text-xs sm:text-sm lg:text-[16px] text-muted-foreground text-center">
                         {service.name}
                       </p>
