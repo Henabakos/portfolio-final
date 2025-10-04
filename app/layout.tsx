@@ -14,7 +14,9 @@ const bricolageGrotesque = Bricolage_Grotesque({
 export const metadata: Metadata = {
   title: "Henok Assefa",
   description: "Henok Assefa's personal portfolio website",
-  generator: "v0.app",
+  icons: {
+    icon: "/logo 1.svg",
+  },
 };
 
 export default function RootLayout({
