@@ -26,13 +26,18 @@ import {
   Feather,
   Server,
   Database,
+  Sparkles,
+  Palette,
+  Package,
   CodeXml,
   Quote,
 } from "lucide-react";
 import Link from "next/link";
 import { LoadingScreen } from "@/components/loading-screen";
 import { sendEmail } from "@/app/actions/send-email";
+import useSWR from "swr";
 import { CustomArrow } from "@/components/custom-arrow";
+import { fetcher } from "@/lib/api";
 
 interface Service {
   id: string;
@@ -109,9 +114,33 @@ const getIconComponent = (iconName: string) => {
     Linkedin,
     Github,
     CodeXml,
+    Sparkles,
+    Palette,
+    Package,
   };
   return icons[iconName] || Code;
 };
+
+const FALLBACK_SOCIALS = [
+  {
+    platform: "Instagram",
+    username: "@henaman49",
+    followers: "300 followers",
+    icon: "Instagram",
+  },
+  {
+    platform: "Github",
+    username: "Henabakos",
+    followers: "",
+    icon: "Youtube",
+  },
+  {
+    platform: "Linkedin",
+    username: "Henok Assefa",
+    followers: "3.5k followers",
+    icon: "Twitter",
+  },
+];
 
 export default function AboutPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -120,6 +149,11 @@ export default function AboutPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [about, setAbout] = useState<About>(initialAboutState);
   const [loading, setLoading] = useState(true);
+  const { data: socialsData, isLoading: loadingSocials } = useSWR(
+    "/api/socials",
+    fetcher
+  );
+  const socials = socialsData || FALLBACK_SOCIALS;
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -221,7 +255,7 @@ export default function AboutPage() {
     }
   };
 
-  if (loading) {
+  if (loading || loadingSocials) {
     return <LoadingScreen />;
   }
 
@@ -430,7 +464,7 @@ export default function AboutPage() {
             {[
               { value: "4", label: "Years of Experience" },
               { value: "100+", label: "Projects Complete" },
-              { value: "100+", label: "Happy Customers" },
+              { value: "50+", label: "Happy Customers" },
               { value: "95%", label: "Positive Feedback" },
             ].map((item, index) => (
               <div
@@ -596,51 +630,32 @@ export default function AboutPage() {
       </div>
 
       {/* Social Media Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-        <Card className="border-0 shadow-sm bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border-[#252627] flex p-6">
-          <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
-            <div className="w-16 h-16  items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border dark:border-gray-100/2 border border-gray-200 rounded-full shadow-sm">
-              <Github className="w-6 h-6 black-text dark:text-[#CDD0DA]" />{" "}
-            </div>
-            <div className="text-start">
-              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text dark:text-[#CDD0DA]">
-                Github
-              </h3>
-              <p className="text-sm gray-text text-[16px] leading-[30px]  text-[#858B9B]">
-                Henabakos
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-20">
+        {socials.map((social: any, index: number) => {
+          const IconComponent = getIconComponent(social.icon);
+          return (
+            <Link href={social.url} key={social.platform}>
+              <Card className="border-0 shadow-sm bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border-[#252627] flex p-4 sm:p-6 hover:shadow-md transition-all rounded-xl">
+                <CardContent className="flex items-center sm:gap-6 gap-4 w-full p-0">
+                  {/* Icon wrapper */}
+                  <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]">
+                    <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-[#CDD0DA]" />
+                  </div>
 
-        <Card className="border-0 shadow-sm bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border-[#252627] flex p-6">
-          <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
-            <div className="w-16 h-16  items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border dark:border-gray-100/2 border border-gray-200 rounded-full shadow-sm">
-              <Linkedin className="w-6 h-6 black-text dark:text-[#CDD0DA]" />
-            </div>
-            <div className="text-start">
-              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text dark:text-[#CDD0DA]">
-                Linkedin
-              </h3>
-              <p className="text-sm gray-text text-[16px] leading-[30px] text-[#858B9B]">
-                Henok Assefa
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-sm bg-white/50 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border-[#252627]  flex p-6">
-          <CardContent className="flex justify-start items-center gap-6 p-4 w-full">
-            <div className="w-16 h-16  items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] dark:border dark:border-gray-100/2 border border-gray-200 rounded-full shadow-sm">
-              <Instagram className="w-6 h-6 black-text dark:text-[#CDD0DA]" />{" "}
-            </div>
-            <div className="text-start">
-              <h3 className="font-semibold text-[20px] leading-[30px] mb-1 black-text dark:text-[#CDD0DA]">
-                Instagram
-              </h3>
-              <p className="text-sm gray-text text-[#858B9B]">@henaman49</p>
-            </div>
-          </CardContent>
-        </Card>
+                  {/* Texts */}
+                  <div className="flex flex-col text-start overflow-hidden">
+                    <h3 className="font-semibold text-base sm:text-lg lg:text-xl leading-tight sm:leading-[30px] mb-1 truncate dark:text-[#CDD0DA]">
+                      {social.platform}
+                    </h3>
+                    <p className="text-sm sm:text-base text-[#858B9B] truncate">
+                      {social.username}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
 
       {/* Contact Section */}

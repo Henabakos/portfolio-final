@@ -106,7 +106,7 @@ export default function ProjectsPage() {
                             {project.title}
                           </h2>
                           {project.description && (
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-[14px] sm:text-[16px] gray-text leading-[24px] sm:leading-[30px] line-clamp-2">
                               {project.description}
                             </p>
                           )}
@@ -149,7 +149,7 @@ export default function ProjectsPage() {
                             {project.title}
                           </h2>
                           {project.description && (
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-[14px] sm:text-[16px] gray-text leading-[24px] sm:leading-[30px] line-clamp-2">
                               {project.description}
                             </p>
                           )}

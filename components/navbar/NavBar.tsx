@@ -83,7 +83,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="h-9 w-9 bg-secondary border border-border rounded-full hover:bg-secondary/80 transition-colors"
+            className="h-9 w-9 bg-secondary border border-border rounded-full hover:bg-secondary/80 transition-colors hover:text-gray-500 "
           >
             {mounted && (
               <>
@@ -96,7 +96,7 @@ export function Header() {
           <Button
             variant="outline"
             onClick={() => (window.location.href = "/contact")}
-            className="hidden md:flex hover:bg-secondary/80 transition-colors border-border rounded-full px-4 bg-secondary text-sm"
+            className="hidden md:flex hover:bg-secondary/80 transition-colors border-border rounded-full px-4 bg-secondary text-sm  hover:text-gray-500"
           >
             Let's Talk
           </Button>
@@ -105,7 +105,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden h-9 w-9 hover:bg-secondary/80 transition-colors"
+                className="lg:hidden h-9 w-9 hover:bg-secondary/80 transition-colors  hover:text-gray-500"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
@@ -118,15 +118,18 @@ export function Header() {
             >
               {/* Logo + Title */}
               <div className="flex items-center gap-2 mb-8">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary">
-                  <div className="grid h-4 w-4 grid-cols-2 gap-0.5">
-                    <div className="h-1.5 w-1.5 rounded-sm bg-foreground"></div>
-                    <div className="h-1.5 w-1.5 rounded-sm bg-foreground"></div>
-                    <div className="h-1.5 w-1.5 rounded-sm bg-foreground"></div>
-                    <div className="h-1.5 w-1.5 rounded-sm bg-foreground"></div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg">
+                  <div className="relative h-10 w-10 md:h-14 md:w-14">
+                    <Image
+                      src="/logo 2 (1).svg" // put your file in public/
+                      alt="Logo"
+                      fill
+                      className="object-contain dark:invert"
+                      priority
+                    />
                   </div>
                 </div>
-                <SheetTitle className="text-lg font-bold">BentoMan</SheetTitle>
+                {/* <SheetTitle className="text-lg font-bold">BentoMan</SheetTitle> */}
               </div>
 
               {/* Nav Links */}
@@ -139,13 +142,26 @@ export function Header() {
                     className={`w-full text-left px-4 py-3 rounded-[5px] text-sm font-medium transition-colors
             ${
               pathname === item.href
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                ? "bg-primary text-primary-foreground dark:bg-[#f5f7f9] dark:text-[#1a1c1e]"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80 dark:bg-[#2a2c2e] dark:text-[#e5e7eb] dark:hover:bg-[#3a3c3e]"
             }`}
                   >
                     {item.name}
                   </a>
                 ))}
+                <a
+                  key="contact"
+                  href="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className={`w-full text-left px-4 py-3 rounded-[5px] text-sm font-medium transition-colors
+            ${
+              pathname === "/contact"
+                ? "bg-primary text-primary-foreground dark:bg-[#f5f7f9]"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            }`}
+                >
+                  Contact
+                </a>
               </nav>
             </SheetContent>
           </Sheet>

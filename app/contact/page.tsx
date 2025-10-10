@@ -1,9 +1,8 @@
 "use client";
 
 import type React from "react";
-
 import { useEffect, useState } from "react";
-import { Phone, Mail, MapPin, Copy, Check } from "lucide-react";
+import { Phone, Mail, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,7 +24,7 @@ function CopyButton({
     try {
       await navigator.clipboard.writeText(textToCopy);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // Reset state after 2 seconds
+      setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
     }
@@ -34,16 +33,14 @@ function CopyButton({
   return (
     <button
       onClick={handleCopy}
-      // Compact styling for embedding next to text
       className={`p-1 rounded-md transition-colors duration-300 flex-shrink-0 ml-2 ${
         isCopied
-          ? "bg-green-100 text-green-700" // Success state
-          : "bg-transparent text-muted-foreground/60 hover:text-foreground" // Default state
+          ? "bg-green-100 text-green-700"
+          : "bg-transparent text-muted-foreground/60 hover:text-foreground"
       } ${className}`}
       aria-label={`Copy ${textToCopy}`}
       disabled={isCopied}
     >
-      {/* Reduced icon size for better inline fit */}
       {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
     </button>
   );
@@ -54,7 +51,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    budget: "", // Replaced subject with budget
+    budget: "",
     description: "",
   });
   const [contact, setContact] = useState<any>(null);
@@ -65,7 +62,6 @@ export default function ContactPage() {
     message: string;
   }>({ type: null, message: "" });
 
-  // Define contact data for easier use
   const phone = contact?.phone || "+251945014531";
   const email = contact?.email || "henogato9876@gmail.com";
 
@@ -103,7 +99,6 @@ export default function ContactPage() {
     setIsSubmitting(true);
     setFormStatus({ type: null, message: "" });
 
-    // Add current time for the email
     const now = new Date().toLocaleString("en-US", {
       timeZone: "Africa/Addis_Ababa",
       hour: "2-digit",
@@ -124,8 +119,8 @@ export default function ContactPage() {
           name: formData.name,
           email: formData.email,
           budget: formData.budget,
-          message: formData.description, // Using description as the message content
-          time: timeString, // Include current time
+          message: formData.description,
+          time: timeString,
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
@@ -156,151 +151,119 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen ">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-5 max-w-7xl mx-auto">
-          {/* Left Side - Contact Info & Map */}
+    <div className="min-h-screen w-full py-10 px-3 sm:px-4">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 max-w-7xl mx-auto">
+          {/* Left Side */}
           <div className="space-y-8">
-            {/* Contact Information Cards */}
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Phone Card */}
-              <Card
-                className="p-5 text-start  gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
-    border border-gray-100/2 hover:shadow-lg transition-shadow"
-              >
-                <div className="w-16 h-16 items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border border-gray-200 rounded-full">
-                  <Phone className="w-8 h-8 text-primary" />
+              <Card className="p-5 text-start gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] border border-gray-100/2 hover:shadow-lg transition-shadow">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] border border-gray-200 dark:border-white/5 rounded-full mb-3">
+                  <Phone className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                 </div>
-                {/* FIX: Use flex to align text and button */}
-                <div className="flex items-center justify-start gap-2 mb-2">
-                  <h3 className="text-[24px] leading-[32px] font-[600] black-text  dark:text-[#CDD0DA]">
+                <div className="flex items-center justify-start gap-2 mb-2 flex-wrap">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold black-text dark:text-[#CDD0DA] break-all">
                     {loading ? "..." : phone}
                   </h3>
-                  {/* Individual Copy Button for Phone */}
                   {!loading && <CopyButton textToCopy={phone} />}
                 </div>
-                <p className="text-[16px] leading-[30px] gray-text   dark:text-[#858B9B]">
+                <p className="text-sm sm:text-base gray-text dark:text-[#858B9B]">
                   Phone Number
                 </p>
               </Card>
 
               {/* Email Card */}
-              <Card
-                className="p-5 text-start  gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
-    border border-gray-100/2 hover:shadow-lg transition-shadow"
-              >
-                <div className="w-16 h-16 items-center justify-center flex gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border border-gray-200 rounded-full">
-                  <Mail className="w-8 h-8 text-primary" />
+              <Card className="p-5 text-start gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] border border-gray-100/2 hover:shadow-lg transition-shadow">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] border border-gray-200 dark:border-white/5 rounded-full mb-3">
+                  <Mail className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                 </div>
-                {/* FIX: Use flex to align text and button, ensuring responsive truncation */}
-                <div className="flex items-center justify-start gap-2 mb-2">
-                  {/* Email text uses flex-grow and truncate to ensure it handles long addresses */}
-                  <h3 className="text-[24px] leading-[32px] font-[600] black-text  dark:text-[#CDD0DA] max-w-full overflow-hidden truncate flex-grow">
+                <div className="flex items-center justify-start gap-2 mb-2 flex-wrap">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold black-text dark:text-[#CDD0DA] break-all truncate max-w-[200px] sm:max-w-xs md:max-w-full">
                     {loading ? "..." : email}
                   </h3>
-                  {/* Individual Copy Button for Email */}
                   {!loading && <CopyButton textToCopy={email} />}
                 </div>
-                <p className="text-[16px] leading-[30px] gray-text   dark:text-[#858B9B]">
+                <p className="text-sm sm:text-base gray-text dark:text-[#858B9B]">
                   My Contact Mail
                 </p>
               </Card>
             </div>
 
-            {/* Map Section */}
-            <Card
-              className="p-4 sm:p-6 lg:p-2 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
-    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
-            >
-              <div className="space-y-4">
-                <div className="relative h-80 bg-muted rounded-lg overflow-hidden">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.4048963886617!2d39.288293274209096!3d8.557007091486694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b21eaaaaaaaab%3A0x51e1d46f04051fe9!2sAdama%20University!5e0!3m2!1sen!2set!4v1758890120120!5m2!1sen!2set"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="rounded-lg"
-                  ></iframe>
-                </div>
+            {/* Map */}
+            <Card className="p-3 sm:p-5 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.01] group mb-6">
+              <div className="relative h-64 sm:h-80 bg-muted rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.4048963886617!2d39.288293274209096!3d8.557007091486694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b21eaaaaaaaab%3A0x51e1d46f04051fe9!2sAdama%20University!5e0!3m2!1sen!2set!4v1758890120120!5m2!1sen!2set"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="rounded-lg"
+                ></iframe>
               </div>
             </Card>
           </div>
 
-          {/* Right Side - Contact Form */}
-          <Card
-            className="p-4 sm:p-6 lg:px-7 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
-    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-10 flex-1"
-          >
-            <div className="">
-              <div className="mb-8">
-                <h2 className="text-[24px] font-[700] black-text  dark:text-[#CDD0DA] leading-[32px] mb-2">
+          {/* Right Side */}
+          <Card className="p-4 sm:p-6 lg:px-7 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.01] group">
+            <div>
+              <div className="mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-bold black-text dark:text-[#CDD0DA] mb-2">
                   Send an E-mail
                 </h2>
-                <p className="text-[16px] gray-text   dark:text-[#858B9B] leading-[30px]">
+                <p className="text-sm sm:text-base gray-text dark:text-[#858B9B]">
                   for your inquiry and ideas
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Name and Email Row */}
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <Input
-                      type="text"
-                      name="name"
-                      placeholder="Name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="h-12 bg-background  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 focus:border-none rounded-full placeholder:text-gray-400 p-6"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      type="email"
-                      name="email"
-                      placeholder="Email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="h-12 bg-background rounded-full dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 placeholder:text-gray-400 p-6"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Budget */}
-                <div>
+              <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     type="text"
-                    name="budget"
-                    placeholder="Budget"
-                    value={formData.budget}
+                    name="name"
+                    placeholder="Name"
+                    value={formData.name}
                     onChange={handleInputChange}
-                    className="h-12 bg-background rounded-full dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 placeholder:text-gray-400 p-6"
+                    className="h-12 rounded-full placeholder:text-gray-400 px-5 text-sm sm:text-base"
+                    required
+                  />
+                  <Input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="h-12 rounded-full placeholder:text-gray-400 px-5 text-sm sm:text-base"
                     required
                   />
                 </div>
 
-                {/* Description (mapped to message) */}
-                <div>
-                  <Textarea
-                    name="description"
-                    placeholder="Tell me about the project..."
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="min-h-32 bg-background  resize-none dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]  dark:border-white/5 border-gray-200 placeholder:text-gray-400 rounded-2xl p-5"
-                    required
-                  />
-                </div>
+                <Input
+                  type="text"
+                  name="budget"
+                  placeholder="Budget"
+                  value={formData.budget}
+                  onChange={handleInputChange}
+                  className="h-12 rounded-full placeholder:text-gray-400 px-5 text-sm sm:text-base"
+                  required
+                />
 
-                {/* Submit Button and Status Message */}
-                <div className="pt-4">
+                <Textarea
+                  name="description"
+                  placeholder="Tell me about the project..."
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="min-h-28 sm:min-h-32 resize-none rounded-2xl placeholder:text-gray-400 p-4 text-sm sm:text-base"
+                  required
+                />
+
+                <div className="pt-2 sm:pt-4">
                   {formStatus.message && (
                     <p
-                      className={`mb-4 text-sm ${
+                      className={`mb-4 text-sm sm:text-base ${
                         formStatus.type === "success"
                           ? "text-green-600"
                           : "text-red-600"
@@ -311,7 +274,7 @@ export default function ContactPage() {
                   )}
                   <Button
                     type="submit"
-                    className="h-12 bg-foreground text-background hover:bg-foreground/90 font-medium rounded-full px-6 py-3"
+                    className="h-12 w-full sm:w-auto bg-foreground text-background hover:bg-foreground/90 font-medium rounded-full px-6 py-3 text-sm sm:text-base"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? "Sending..." : "Send Message"}
