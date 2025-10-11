@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import useSWR from "swr";
 import { fetcher } from "@/lib/api";
 import { CustomArrow } from "@/components/custom-arrow";
+import { LoadingScreen } from "./loading-screen";
 
 interface Project {
   id: string;
@@ -26,7 +27,12 @@ export function InfiniteScrollProjects() {
     }
   }, [projects]);
 
-  if (!projects || projects.length === 0) return null;
+  if (!projects)
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
 
   return (
     <Card
