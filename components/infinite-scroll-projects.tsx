@@ -21,7 +21,6 @@ export function InfiniteScrollProjects() {
 
   useEffect(() => {
     if (projects && projects.length > 0) {
-      // only two copies are needed for seamless looping
       const duplicated = [...projects, ...projects];
       setDuplicatedProjects(duplicated);
     }
