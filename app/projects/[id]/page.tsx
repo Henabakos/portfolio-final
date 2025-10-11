@@ -241,7 +241,10 @@ export default function ProjectDetailPage({
                   {project.testimonial.image && (
                     <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
                       <Image
-                        src={project.testimonial.image || "/placeholder.svg"}
+                        src={
+                          project.testimonial.image ||
+                          "/https://i.pinimg.com/236x/6f/a3/6a/6fa36aa2c367da06b2a4c8ae1cf9ee02.jpg"
+                        }
                         alt={project.testimonial.author}
                         fill
                         className="object-cover"

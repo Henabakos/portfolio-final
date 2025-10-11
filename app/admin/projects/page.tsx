@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, ExternalLink, FolderOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { LoadingScreen } from "@/components/loading-screen";
 
 interface Project {
   id: string;
@@ -53,7 +52,9 @@ export default function ProjectsAdmin() {
   };
 
   if (loading) {
-    return <LoadingScreen />;
+    return (
+      <div className="flex justify-center items-center h-64">Loading...</div>
+    );
   }
 
   return (
@@ -104,7 +105,7 @@ export default function ProjectsAdmin() {
               </div>
               <div className="flex justify-between items-center">
                 <div className="flex gap-2">
-                  <Link href={`/admin/projects/edit/${project.id}`}>
+                  <Link href={`/admin/projects/${project.id}`}>
                     <Button size="sm" variant="outline">
                       <Edit className="w-4 h-4" />
                     </Button>

@@ -11,6 +11,7 @@ import {
   CheckCheck,
   Layout,
   Atom,
+  Send,
   Code,
   CurlyBraces,
   Figma,
@@ -31,6 +32,9 @@ import {
   Package,
   CodeXml,
   Quote,
+  ThumbsUp,
+  MessageSquare,
+  LifeBuoy,
 } from "lucide-react";
 import Link from "next/link";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -38,6 +42,37 @@ import { sendEmail } from "@/app/actions/send-email";
 import useSWR from "swr";
 import { CustomArrow } from "@/components/custom-arrow";
 import { fetcher } from "@/lib/api";
+
+const items = [
+  {
+    icon: <ThumbsUp className="w-4 h-4 text-white" />,
+    bg: "bg-blue-100",
+    circle: "bg-blue-500",
+    label: "Client Satisfaction",
+    value: "15+ Testimonials",
+  },
+  {
+    icon: <MessageSquare className="w-4 h-4 text-white" />,
+    bg: "bg-gray-100",
+    circle: "bg-gray-600",
+    label: "Direct Feedback",
+    value: "2-Hour Response",
+  },
+  {
+    icon: <Rocket className="w-4 h-4 text-white" />,
+    bg: "bg-blue-100",
+    circle: "bg-blue-500",
+    label: "Delivery Speed",
+    value: "2-Week Average",
+  },
+  {
+    icon: <LifeBuoy className="w-4 h-4 text-white" />,
+    bg: "bg-red-100",
+    circle: "bg-red-500",
+    label: "Post-Launch",
+    value: "3 Month Support",
+  },
+];
 
 interface Service {
   id: string;
@@ -102,6 +137,7 @@ const getIconComponent = (iconName: string) => {
     Figma,
     Globe,
     Target,
+    Send,
     Frame,
     Feather,
     CurlyBraces,
@@ -322,7 +358,6 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Image (on top in small, right in large) */}
           <div className="flex justify-center md:justify-end order-1 md:order-2 w-full mt-1 md:mt-0">
             <div className="relative w-full max-w-full sm:max-w-[360px] md:max-w-[320px] lg:max-w-[480px] aspect-square">
               <img
@@ -484,54 +519,27 @@ export default function AboutPage() {
 
         <Card
           className="p-0 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
-    border border-gray-100/2
-    hover:border-gray-100/10"
+      border border-gray-100/2 hover:border-gray-100/10"
         >
           <div className="grid grid-cols-2 divide-x divide-y divide-black/8 dark:divide-white/5">
-            {[
-              {
-                icon: "W",
-                bg: "bg-blue-100",
-                circle: "bg-blue-500",
-                label: "Client Satisfaction",
-                value: "15+ Testimonials",
-              },
-              {
-                icon: "",
-                bg: "bg-gray-100",
-                circle: "bg-gray-600",
-                label: "Direct Feedback",
-                value: "2-Hour Response",
-              },
-              {
-                icon: "B",
-                bg: "bg-blue-100",
-                circle: "bg-blue-500",
-                label: "Delivery Speed",
-                value: "2-Week Average",
-              },
-              {
-                icon: "P",
-                bg: "bg-red-100",
-                circle: "bg-red-500",
-                label: "Post-Launch",
-                value: "3 Month Support",
-              },
-            ].map((item, i) => (
+            {items.map((item, i) => (
               <div
                 key={i}
                 className="flex flex-col items-center justify-center p-6 sm:p-8 lg:p-16 transition-colors"
               >
+                {/* Icon container */}
                 <div
                   className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center mx-auto mb-4`}
                 >
                   <div
-                    className={`w-6 h-6 ${item.circle} rounded-full flex items-center justify-center text-white text-xs font-bold`}
+                    className={`w-6 h-6 ${item.circle} rounded-full flex items-center justify-center`}
                   >
                     {item.icon}
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-600 mb-1  dark:text-[#858B9B]">
+
+                {/* Text content */}
+                <p className="text-xs sm:text-sm text-gray-600 mb-1 dark:text-[#858B9B]">
                   {item.label}
                 </p>
                 <p className="font-semibold text-gray-900 text-sm sm:text-md dark:text-[#CDD0DA]">
@@ -545,42 +553,37 @@ export default function AboutPage() {
 
       {/* Services Section - Now fetching from database */}
       <Card
-        className="p-4 sm:p-6 lg:p-8  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
-    border border-gray-100/2
-    hover:border-gray-100/10 transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-5 flex-1 mt-10"
+        className="p-4 sm:p-6 lg:p-8 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
+  border border-gray-100/2 hover:border-gray-100/10 transition-all duration-300 hover:scale-[1.02] group mb-4 sm:mb-5 flex-1 mt-10"
       >
         <div className="mb-20">
           <h2 className="text-[30px] font-semibold black-text mb-8 dark:text-[#CDD0DA]">
             My Services
           </h2>
+
           <Link href={"/services"}>
-            <div className="space-y-6">
+            <div className="space-y-8">
               {services.map((service) => {
                 const IconComponent = getIconComponent(service.icon);
                 return (
                   <div
                     key={service.id}
-                    className="flex flex-col sm:flex-row items-start justify-between border-b border-b-gray-200 dark:border-b-white/5 last:border-b-0 pb-8 hover:text-[#2f3236] dark:hover:text-white transition-colors cursor-pointer"
+                    className="flex flex-col sm:flex-row items-start justify-between border-b border-border last:border-b-0 pb-8 dark:border-b-white/5  hover:text-[#2f3236] dark:hover:text-white "
                   >
                     <div className="flex flex-col sm:flex-row flex-1 gap-4 sm:gap-12 lg:gap-40 gray-text hover:text-[#2f3236] text-[16px] leading-[28px] dark:text-[#858B9B] dark:hover:text-white">
-                      {/* Left side (icon + text content) */}
-                      <div className="flex gap-4 min-w-[200px]">
-                        {/* Icon */}
+                      <div className="flex items-center gap-4 min-w-[240px] sm:min-w-[260px] lg:min-w-[300px]">
                         <div className="w-12 h-12 bg-gray-100 dark:bg-background/30 rounded-xl flex items-center justify-center">
                           <IconComponent className="h-7 w-7" />
                         </div>
-
-                        {/* Title + Description stacked */}
-                        <div className="flex flex-col">
-                          <h3 className="font-bold text-lg">{service.name}</h3>
-                          <p className="text-[14px] sm:text-[16px] leading-[30px]">
-                            {service.description}
-                          </p>
-                        </div>
+                        <h3 className="font-bold text-lg whitespace-nowrap">
+                          {service.name}
+                        </h3>
                       </div>
 
-                      {/* Arrow on the right */}
-                      <CustomArrow className="hidden sm:block h-10 w-10 shrink-0" />
+                      <p className="flex-1 text-[14px] sm:text-[16px] leading-[30px]">
+                        {service.description}
+                      </p>
+                      <CustomArrow className="hidden sm:block w-8 h-8 mt-1 shrink-0 ml-6" />
                     </div>
                   </div>
                 );
