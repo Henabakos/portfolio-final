@@ -16,7 +16,7 @@ export function Footer() {
 
           <div className="pt-8">
             <p className="text-sm text-muted-foreground">
-              {new Date().getFullYear()}
+              {new Date().getFullYear()}@
               <span className="font-semibold text-foreground">
                 Henok Assefa
               </span>
