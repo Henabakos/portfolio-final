@@ -16,9 +16,11 @@ export function Footer() {
 
           <div className="pt-8">
             <p className="text-sm text-muted-foreground">
-              ©2024{" "}
-              <span className="font-semibold text-foreground">bentoMan</span>.
-              All Rights Reserved
+              {new Date().getFullYear()}
+              <span className="font-semibold text-foreground">
+                Henok Assefa
+              </span>
+              . All Rights Reserved
             </p>
           </div>
         </div>
