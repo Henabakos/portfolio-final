@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Menu, Moon, Sun } from "lucide-react";
+import { Link, Menu, Moon, Sun } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -52,13 +52,15 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center justify-center">
           <div className="relative h-10 w-10 md:h-14 md:w-14">
-            <Image
-              src="/logo 2 (1).svg" // put your file in public/
-              alt="Logo"
-              fill
-              className="object-contain dark:invert"
-              priority
-            />
+            <Link href="/home">
+              <Image
+                src="/logo 2 (1).svg"
+                alt="Logo"
+                fill
+                className="object-contain dark:invert"
+                priority
+              />
+            </Link>
           </div>
         </div>
 
