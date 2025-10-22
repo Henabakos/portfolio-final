@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { LoadingScreen } from "@/components/loading-screen";
-import { sendEmail } from "@/app/actions/send-email";
+import emailjs from "@emailjs/browser";
 import useSWR from "swr";
 import { CustomArrow } from "@/components/custom-arrow";
 import { fetcher } from "@/lib/api";
@@ -260,32 +260,52 @@ export default function AboutPage() {
     setIsSubmitting(true);
     setFormStatus({ type: null, message: "" });
 
-    try {
-      const result = await sendEmail({
-        name: formData.name,
-        email: formData.email,
-        budget: formData.budget,
-        message: formData.message,
-      });
+    const now = new Date().toLocaleString("en-US", {
+      timeZone: "Africa/Addis_Ababa",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    const timeString = `${now} EAT`;
 
-      if (result.success) {
+    try {
+      const response = await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          name: formData.name,
+          email: formData.email,
+          budget: formData.budget,
+          message: formData.message,
+          time: timeString,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+      console.log("EmailJS response:", response);
+      setFormStatus({
+        type: "success",
+        message: "Your message has been sent successfully!",
+      });
+      setFormData({ name: "", email: "", budget: "", message: "" });
+    } catch (error) {
+      console.error("Detailed error sending email:", error);
+      if (error instanceof Error) {
         setFormStatus({
-          type: "success",
-          message: result.message,
+          type: "error",
+          message: `Failed to send message: ${
+            error.message || "Unknown error"
+          }`,
         });
-        setFormData({ name: "", email: "", budget: "", message: "" });
       } else {
         setFormStatus({
           type: "error",
-          message: result.message,
+          message: "Failed to send message. Please try again later.",
         });
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      setFormStatus({
-        type: "error",
-        message: "Failed to send message. Please try again later.",
-      });
     } finally {
       setIsSubmitting(false);
     }

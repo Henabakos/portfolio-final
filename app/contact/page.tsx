@@ -153,7 +153,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen w-full py-10 px-3 sm:px-4">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 max-w-[1440px] mx-auto">
           {/* Left Side */}
           <div className="space-y-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -191,7 +191,7 @@ export default function ContactPage() {
             </div>
 
             {/* Map */}
-            <Card className="p-3 sm:p-5 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.01] group mb-6">
+            <Card className="p-3 sm:p-5 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.01] group">
               <div className="relative h-64 sm:h-80 bg-muted rounded-lg overflow-hidden">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.4048963886617!2d39.288293274209096!3d8.557007091486694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b21eaaaaaaaab%3A0x51e1d46f04051fe9!2sAdama%20University!5e0!3m2!1sen!2set!4v1758890120120!5m2!1sen!2set"

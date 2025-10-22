@@ -91,7 +91,7 @@ export default function ServicesPage() {
 
   return (
     <div className="min-h-screen">
-      <main className="container mx-auto px-4 max-w-7xl">
+      <main className="container mx-auto px-4 max-w-[1440px] py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <aside className="lg:col-span-4">
             <div className="sticky top-28">
