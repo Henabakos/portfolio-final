@@ -26,7 +26,7 @@ export default function NewBlogPost() {
     slug: "",
     published: false,
     tags: [] as string[],
-    readTime: 5,
+    author: "",
   });
 
   const generateSlug = (title: string) => {
@@ -161,6 +161,18 @@ export default function NewBlogPost() {
               <CardTitle>Post Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="author">Author</Label>
+                <Input
+                  id="author"
+                  value={post.author}
+                  onChange={(e) =>
+                    setPost({ ...post, author: e.target.value })
+                  }
+                  placeholder="Author name"
+                />
+              </div>
+
               <div className="flex items-center space-x-2">
                 <Switch
                   id="published"
@@ -170,22 +182,6 @@ export default function NewBlogPost() {
                   }
                 />
                 <Label htmlFor="published">Publish immediately</Label>
-              </div>
-
-              <div>
-                <Label htmlFor="readTime">Read Time (minutes)</Label>
-                <Input
-                  id="readTime"
-                  type="number"
-                  value={post.readTime}
-                  onChange={(e) =>
-                    setPost({
-                      ...post,
-                      readTime: Number.parseInt(e.target.value) || 5,
-                    })
-                  }
-                  min="1"
-                />
               </div>
             </CardContent>
           </Card>

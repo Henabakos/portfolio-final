@@ -334,3 +334,72 @@
 .rich-content hr {
   @apply my-6 border-t border-border;
 }
+
+/* Enhanced code block styling with syntax highlighting */
+.code-block-wrapper {
+  @apply bg-slate-950 dark:bg-slate-950 rounded-lg overflow-hidden my-6 border border-slate-800;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+}
+
+.code-language-label {
+  @apply bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-400 border-b border-slate-800 uppercase tracking-wide;
+}
+
+.code-content {
+  @apply overflow-x-auto p-4;
+}
+
+.code-content code {
+  @apply text-sm leading-6 text-slate-100;
+  background: none !important;
+  padding: 0 !important;
+}
+
+/* Syntax highlighting colors */
+.code-content .hljs-string,
+.code-content .hljs-attr {
+  @apply text-green-400;
+}
+
+.code-content .hljs-number,
+.code-content .hljs-literal {
+  @apply text-blue-400;
+}
+
+.code-content .hljs-function,
+.code-content .hljs-attr {
+  @apply text-yellow-400;
+}
+
+.code-content .hljs-keyword {
+  @apply text-pink-400;
+}
+
+.code-content .hljs-comment {
+  @apply text-slate-500 italic;
+}
+
+.code-content .hljs-tag {
+  @apply text-purple-400;
+}
+
+.code-content .hljs-name {
+  @apply text-orange-400;
+}
+
+.code-content .hljs-class {
+  @apply text-cyan-400;
+}
+
+/* Responsive table wrapper */
+.table-wrapper {
+  @apply overflow-x-auto my-6 border border-border rounded-lg;
+}
+
+.table-wrapper table {
+  @apply w-full;
+}
+
+.rich-content table {
+  @apply my-0;
+}

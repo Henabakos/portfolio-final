@@ -21,19 +21,27 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
-    const { title, content, excerpt, coverImage, slug, published, tags, readTime } = body
+    const { title, content, excerpt, coverImage, slug, published, tags, author } = body
+
+    // Validate required fields
+    if (!title || !content) {
+      return NextResponse.json(
+        { error: "Title and content are required" },
+        { status: 400 }
+      )
+    }
 
     const post = await prisma.blogPost.update({
       where: { id: params.id },
       data: {
         title,
         content,
-        excerpt,
-        coverImage,
+        excerpt: excerpt || null,
+        coverImage: coverImage || null,
         slug,
         published: published || false,
         tags: tags || [],
-        readTime,
+        author: author || null,
       },
     })
 

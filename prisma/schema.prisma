@@ -46,7 +46,7 @@ model BlogPost {
   slug        String   @unique
   published   Boolean  @default(false)
   tags        String[] // Array of tags
-  readTime    Int?     // Reading time in minutes
+  author      String?  // Author name
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

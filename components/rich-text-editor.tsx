@@ -7,6 +7,14 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Color from "@tiptap/extension-color";
 import { TextStyle } from "@tiptap/extension-text-style";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import Highlight from "@tiptap/extension-highlight";
+import Table from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import Strikethrough from "@tiptap/extension-strike";
+import { lowlight } from "lowlight";
 import { Button } from "@/components/ui/button";
 import {
   Bold,
@@ -17,16 +25,24 @@ import {
   Undo,
   Redo,
   Heading2,
+  Heading1,
+  Heading3,
   ImageIcon,
   Link2,
   Palette,
+  Code2,
+  Table2,
+  Strikethrough as StrikethroughIcon,
+  Upload,
+  Loader,
 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { isMarkdownContent, parseMarkdownToHtml } from "@/components/blog/utils/markdownParser";
 
 interface RichTextEditorProps {
   content: string;
@@ -40,12 +56,20 @@ export function RichTextEditor({
   placeholder,
 }: RichTextEditorProps) {
   const [customColor, setCustomColor] = useState("#000000");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        codeBlock: false,
+      }),
       TextStyle,
       Color,
+      Highlight.configure({
+        multicolor: true,
+      }),
+      Strikethrough,
       Image.configure({
         HTMLAttributes: {
           class: "rounded-lg max-w-full h-auto",
@@ -57,6 +81,15 @@ export function RichTextEditor({
           class: "text-primary underline",
         },
       }),
+      CodeBlockLowlight.configure({
+        lowlight,
+      }),
+      Table.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
     ],
     content,
     onUpdate: ({ editor }) => {
@@ -67,6 +100,50 @@ export function RichTextEditor({
         class:
           "prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none min-h-[300px] max-w-none p-4",
       },
+      handlePaste: (view, event) => {
+        // Handle markdown paste
+        const text = event.clipboardData?.getData("text/plain");
+        if (text && isMarkdownContent(text)) {
+          const html = parseMarkdownToHtml(text);
+          editor?.chain().focus().insertContent(html).run();
+          event.preventDefault();
+          return true;
+        }
+
+        // Handle image paste
+        const files = event.clipboardData?.files;
+        if (files && files.length > 0) {
+          Array.from(files).forEach((file) => {
+            if (file.type.startsWith("image/")) {
+              handleImageUpload(file);
+            }
+          });
+          event.preventDefault();
+          return true;
+        }
+
+        return false;
+      },
+      handleDOMEvents: {
+        dragover: (view, event) => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "copy";
+          return true;
+        },
+        drop: (view, event) => {
+          event.preventDefault();
+          const files = event.dataTransfer?.files;
+          if (files && files.length > 0) {
+            Array.from(files).forEach((file) => {
+              if (file.type.startsWith("image/")) {
+                handleImageUpload(file);
+              }
+            });
+            return true;
+          }
+          return false;
+        },
+      },
     },
     immediatelyRender: false,
   });
@@ -75,7 +152,47 @@ export function RichTextEditor({
     return null;
   }
 
+  const handleImageUpload = async (file: File) => {
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+      editor.chain().focus().setImage({ src: data.url }).run();
+    } catch (error) {
+      console.error("Image upload error:", error);
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const addImage = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.currentTarget.files;
+    if (files && files.length > 0) {
+      handleImageUpload(files[0]);
+    }
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const addImageUrl = () => {
     const url = window.prompt("Enter image URL:");
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
@@ -87,6 +204,14 @@ export function RichTextEditor({
     if (url) {
       editor.chain().focus().setLink({ href: url }).run();
     }
+  };
+
+  const addTable = () => {
+    editor
+      .chain()
+      .focus()
+      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+      .run();
   };
 
   const applyColor = (color: string) => {
@@ -118,38 +243,191 @@ export function RichTextEditor({
 
   return (
     <div className="border rounded-lg overflow-hidden">
-      {/* Toolbar */}
-      <div className="flex flex-wrap gap-1 p-2 border-b bg-muted/50">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={editor.isActive("bold") ? "bg-muted" : ""}
-        >
-          <Bold className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={editor.isActive("italic") ? "bg-muted" : ""}
-        >
-          <Italic className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          className={editor.isActive("heading", { level: 2 }) ? "bg-muted" : ""}
-        >
-          <Heading2 className="h-4 w-4" />
-        </Button>
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="hidden"
+        disabled={uploading}
+      />
 
+      {/* Toolbar */}
+      <div className="flex flex-wrap gap-1 p-2 border-b bg-muted/50 overflow-auto">
+        {/* Text formatting */}
+        <div className="flex gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            className={editor.isActive("bold") ? "bg-muted" : ""}
+            title="Bold"
+          >
+            <Bold className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className={editor.isActive("italic") ? "bg-muted" : ""}
+            title="Italic"
+          >
+            <Italic className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            className={editor.isActive("strike") ? "bg-muted" : ""}
+            title="Strikethrough"
+          >
+            <StrikethroughIcon className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="w-px bg-border" />
+
+        {/* Headings */}
+        <div className="flex gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 1 }).run()
+            }
+            className={editor.isActive("heading", { level: 1 }) ? "bg-muted" : ""}
+            title="Heading 1"
+          >
+            <Heading1 className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
+            }
+            className={editor.isActive("heading", { level: 2 }) ? "bg-muted" : ""}
+            title="Heading 2"
+          >
+            <Heading2 className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 3 }).run()
+            }
+            className={editor.isActive("heading", { level: 3 }) ? "bg-muted" : ""}
+            title="Heading 3"
+          >
+            <Heading3 className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="w-px bg-border" />
+
+        {/* Lists and blocks */}
+        <div className="flex gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            className={editor.isActive("bulletList") ? "bg-muted" : ""}
+            title="Bullet list"
+          >
+            <List className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            className={editor.isActive("orderedList") ? "bg-muted" : ""}
+            title="Ordered list"
+          >
+            <ListOrdered className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            className={editor.isActive("blockquote") ? "bg-muted" : ""}
+            title="Quote"
+          >
+            <Quote className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            className={editor.isActive("codeBlock") ? "bg-muted" : ""}
+            title="Code block"
+          >
+            <Code2 className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="w-px bg-border" />
+
+        {/* Media and links */}
+        <div className="flex gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={addImage}
+            disabled={uploading}
+            title="Upload image"
+          >
+            {uploading ? (
+              <Loader className="h-4 w-4 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4" />
+            )}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={addImageUrl}
+            title="Add image from URL"
+          >
+            <ImageIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={addTable}
+            title="Insert table"
+          >
+            <Table2 className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={addLink}
+            className={editor.isActive("link") ? "bg-muted" : ""}
+            title="Add link"
+          >
+            <Link2 className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="w-px bg-border" />
+
+        {/* Colors */}
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -157,6 +435,7 @@ export function RichTextEditor({
               variant="ghost"
               size="sm"
               className="relative"
+              title="Text color"
             >
               <Palette className="h-4 w-4" />
               <div
@@ -220,64 +499,29 @@ export function RichTextEditor({
           </PopoverContent>
         </Popover>
 
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editor.isActive("bulletList") ? "bg-muted" : ""}
-        >
-          <List className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editor.isActive("orderedList") ? "bg-muted" : ""}
-        >
-          <ListOrdered className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={editor.isActive("blockquote") ? "bg-muted" : ""}
-        >
-          <Quote className="h-4 w-4" />
-        </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={addImage}>
-          <ImageIcon className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={addLink}
-          className={editor.isActive("link") ? "bg-muted" : ""}
-        >
-          <Link2 className="h-4 w-4" />
-        </Button>
-        <div className="flex-1" />
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().undo()}
-        >
-          <Undo className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().redo()}
-        >
-          <Redo className="h-4 w-4" />
-        </Button>
+        {/* Undo/Redo */}
+        <div className="flex gap-1 ml-auto">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().undo().run()}
+            disabled={!editor.can().undo()}
+            title="Undo"
+          >
+            <Undo className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().redo().run()}
+            disabled={!editor.can().redo()}
+            title="Redo"
+          >
+            <Redo className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Editor Content */}

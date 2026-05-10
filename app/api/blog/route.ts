@@ -28,19 +28,39 @@ export async function POST(request: NextRequest) {
       slug,
       published,
       tags,
-      readTime,
+      author,
     } = body;
+
+    // Validate required fields
+    if (!title || !content) {
+      return NextResponse.json(
+        { error: "Title and content are required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate slug uniqueness
+    const existingPost = await prisma.blogPost.findUnique({
+      where: { slug },
+    });
+
+    if (existingPost) {
+      return NextResponse.json(
+        { error: "A blog post with this slug already exists" },
+        { status: 400 }
+      );
+    }
 
     const post = await prisma.blogPost.create({
       data: {
         title,
         content,
-        excerpt,
-        coverImage,
+        excerpt: excerpt || null,
+        coverImage: coverImage || null,
         slug,
         published: published || false,
         tags: tags || [],
-        readTime,
+        author: author || null,
       },
     });
 
