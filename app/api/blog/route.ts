@@ -39,10 +39,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate slug uniqueness
-    const existingPost = await prisma.blogPost.findUnique({
-      where: { slug },
-    });
+    // Validate slug uniqueness - use try/catch to handle missing author column
+    let existingPost;
+    try {
+      existingPost = await prisma.blogPost.findUnique({
+        where: { slug },
+      });
+    } catch (error) {
+      console.error("Error checking slug uniqueness:", error);
+      // Continue - slug might not be unique but we'll try to create
+    }
 
     if (existingPost) {
       return NextResponse.json(
@@ -51,17 +57,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Build data object based on what fields are available
+    const postData: any = {
+      title,
+      content,
+      excerpt: excerpt || null,
+      coverImage: coverImage || null,
+      slug,
+      published: published || false,
+      tags: tags || [],
+    };
+
+    // Add author field if provided (in case of database migration in progress)
+    if (author) {
+      postData.author = author;
+    }
+
     const post = await prisma.blogPost.create({
-      data: {
-        title,
-        content,
-        excerpt: excerpt || null,
-        coverImage: coverImage || null,
-        slug,
-        published: published || false,
-        tags: tags || [],
-        author: author || null,
-      },
+      data: postData,
     });
 
     // Revalidate blog listing

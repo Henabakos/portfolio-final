@@ -31,18 +31,25 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       )
     }
 
+    // Build data object based on what fields are available
+    const postData: any = {
+      title,
+      content,
+      excerpt: excerpt || null,
+      coverImage: coverImage || null,
+      slug,
+      published: published || false,
+      tags: tags || [],
+    }
+
+    // Add author field if provided
+    if (author) {
+      postData.author = author
+    }
+
     const post = await prisma.blogPost.update({
       where: { id: params.id },
-      data: {
-        title,
-        content,
-        excerpt: excerpt || null,
-        coverImage: coverImage || null,
-        slug,
-        published: published || false,
-        tags: tags || [],
-        author: author || null,
-      },
+      data: postData,
     })
 
     return NextResponse.json(post)
