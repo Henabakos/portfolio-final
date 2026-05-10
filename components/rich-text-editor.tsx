@@ -9,12 +9,12 @@ import Color from "@tiptap/extension-color";
 import { TextStyle } from "@tiptap/extension-text-style";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Highlight from "@tiptap/extension-highlight";
-import Table from "@tiptap/extension-table";
+import { Table } from "@tiptap/extension-table";
 import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import Strikethrough from "@tiptap/extension-strike";
-import { lowlight } from "lowlight";
+import { common, createLowlight } from "lowlight";
 import { Button } from "@/components/ui/button";
 import {
   Bold,
@@ -58,6 +58,7 @@ export function RichTextEditor({
   const [customColor, setCustomColor] = useState("#000000");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const lowlight = createLowlight(common);
 
   const editor = useEditor({
     extensions: [
@@ -127,7 +128,9 @@ export function RichTextEditor({
       handleDOMEvents: {
         dragover: (view, event) => {
           event.preventDefault();
-          event.dataTransfer.dropEffect = "copy";
+          if (event.dataTransfer) {
+            event.dataTransfer.dropEffect = "copy";
+          }
           return true;
         },
         drop: (view, event) => {
