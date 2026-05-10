@@ -2,10 +2,9 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Calendar, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import useSWR from "swr";
@@ -13,16 +12,18 @@ import { fetcher } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { LoadingScreen } from "@/components/loading-screen";
 import { CustomArrow } from "@/components/custom-arrow";
+import { calculateReadingTime, formatReadingTime } from "@/components/blog/utils/readingTime";
 
 interface BlogPost {
   id: string;
   title: string;
   excerpt?: string;
+  content?: string;
   coverImage?: string;
   slug: string;
   published: boolean;
   tags: string[];
-  readTime?: number;
+  author?: string;
   createdAt: string;
 }
 
@@ -46,98 +47,129 @@ export default function BlogPage() {
     }
   };
 
-  if (loading)
+  const getReadingTime = (post: BlogPost) => {
+    if (!post.content) return 0;
+    return calculateReadingTime(post.content);
+  };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  if (posts.length === 0) {
     return (
-      <div>
-        <LoadingScreen />{" "}
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-foreground">
+            No blog posts yet
+          </h2>
+          <p className="text-muted-foreground">
+            Check back soon for new content
+          </p>
+        </div>
       </div>
     );
+  }
+
   return (
     <div className="min-h-screen">
-      <main className="container mx-auto px-4 ">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {/* Sidebar */}
+      <main className="container mx-auto px-4">
+        {/* Page header */}
+        <div className="mb-12">
+          <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            Blog
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Thoughts on design, development, and the web
+          </p>
+        </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {posts.map((post: any) => (
-                <Card
-                  key={post.id}
-                  className="p-4 h-full sm:p-6 lg:p-2 gradient-card  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
-    border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group mb-4 sm:mb-2 flex-1"
+        {/* Blog posts grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {posts.map((post) => {
+            const readingTime = getReadingTime(post);
+            const publishDate = new Date(post.createdAt).toLocaleDateString(
+              "en-US",
+              {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              }
+            );
+
+            return (
+              <Card
+                key={post.id}
+                className="overflow-hidden h-full flex flex-col border border-border hover:shadow-lg transition-shadow duration-300 group"
+              >
+                <Link
+                  href={`/blog/${post.id}`}
+                  className="flex flex-col h-full"
                 >
-                  <Link
-                    href={`/blog/${post.id}`}
-                    className="flex flex-col h-full gap-4"
-                  >
-                    <div className="relative">
-                      <div className="aspect-[4/3] overflow-hidden h-48 sm:h-64 w-full">
-                        <Image
-                          src={post.coverImage || "/placeholder.svg"}
-                          alt={post.title}
-                          width={400}
-                          height={200}
-                          className="w-full h-full rounded-sm object-cover bg-[#f5f7f9]"
-                        />
-                      </div>
-                      {post.tags?.[0] && (
-                        <Badge className="absolute top-4 right-4 bg-white/90 text-foreground hover:bg-white">
-                          {post.tags[0]}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="px-6 flex flex-col flex-1 gap-1">
-                      <h2 className="text-[20px] font-[700] black-text mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-[28px] dark:text-[#CDD0DA]">
+                  {/* Image */}
+                  <div className="relative overflow-hidden aspect-video bg-muted">
+                    <Image
+                      src={post.coverImage || "/placeholder.svg"}
+                      alt={post.title}
+                      width={600}
+                      height={400}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    {post.tags?.[0] && (
+                      <Badge className="absolute top-4 right-4 bg-foreground text-background hover:bg-foreground/90">
+                        {post.tags[0]}
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex flex-col flex-1 p-6 gap-4">
+                    <div>
+                      <h2 className="text-xl font-bold text-foreground mb-3 line-clamp-2 group-hover:opacity-80 transition-opacity">
                         {post.title}
                       </h2>
-                      <div className="flex items-center gap-4 mb-4">
-                        <Avatar className="w-6 h-6">
-                          <AvatarImage src="/user.jpg" alt={post.author} />
-                          <AvatarFallback>
-                            {(post.author || "A").toString().charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        {post.author && (
-                          <span className="text-sm gray-text dark:text-[#858B9B]">
-                            By {post.author}
-                          </span>
-                        )}
-                        <span className="text-sm gray-text dark:text-[#858B9B]">
-                          ~
-                        </span>
-                        <span className="text-sm gray-text dark:text-[#858B9B]">
-                          {new Date(post.createdAt).toDateString()}
-                        </span>
-                      </div>
                       {post.excerpt && (
-                        <p className="text-[16px] gray-text dark:text-[#858B9B] mb-4 line-clamp-2 leading-[24px]">
+                        <p className="text-sm text-muted-foreground line-clamp-2">
                           {post.excerpt}
                         </p>
                       )}
-                      <div className="flex justify-between">
-                        {/* <Link href={`/blog/${post.id}`}> */}
-                        <div className=" text-[14px] sm:text-[16px]  leading-[25px]">
-                          <p className="hover:border-b border-b-[#2F3236]">
-                            Read More
-                          </p>
-                        </div>
-                        {/* </Link> */}
-                        <div className="flex items-center justify-center hover:text-gray-500">
-                          <CustomArrow className="h-10 w-10 shrink-0 transition-transform group-hover:translate-x-1 text-gray-400 " />
-                        </div>
-                      </div>
                     </div>
-                  </Link>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="text-center mt-10">
-          <Button className="bg-white/80 text-[#2F3236] hover:bg-[#2F3236] dark:bg-gradient-to-b dark:from-[#303131] dark:to-[#1E1E1F] dark:border-[#252627] dark:text-white hover:text-white border border-gray-100 px-6 sm:px-10 py-5 rounded-full text-[14px] sm:text-base">
-            Load More Blogs
-          </Button>
+
+                    {/* Metadata */}
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground border-t border-border pt-4 mt-auto">
+                      {post.author && (
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-5 w-5">
+                            <AvatarImage src={`https://avatar.vercel.sh/${post.author}`} />
+                            <AvatarFallback>
+                              {post.author.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span>{post.author}</span>
+                        </div>
+                      )}
+                      <div className="hidden sm:flex items-center gap-1">
+                        <Calendar className="h-3.5 w-3.5" />
+                        <time dateTime={post.createdAt}>{publishDate}</time>
+                      </div>
+                      {readingTime > 0 && (
+                        <div className="hidden sm:flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          <span>{formatReadingTime(readingTime)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Read more link */}
+                    <div className="flex items-center gap-2 text-sm font-medium text-foreground group-hover:gap-3 transition-all">
+                      Read more
+                      <ArrowRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                </Link>
+              </Card>
+            );
+          })}
         </div>
       </main>
     </div>

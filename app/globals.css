@@ -187,3 +187,150 @@
 .animate-infinite-scroll-smooth:hover {
   animation-play-state: paused; /* optional pause on hover */
 }
+
+/* Rich Content Styling */
+.rich-content {
+  @apply leading-relaxed;
+}
+
+/* Headings */
+.rich-content h1 {
+  @apply text-3xl font-bold mt-8 mb-4 text-foreground;
+}
+
+.rich-content h2 {
+  @apply text-2xl font-bold mt-8 mb-4 text-foreground;
+  @apply scroll-mt-20;
+}
+
+.rich-content h3 {
+  @apply text-xl font-bold mt-6 mb-3 text-foreground;
+  @apply scroll-mt-20;
+}
+
+.rich-content h4 {
+  @apply text-lg font-bold mt-6 mb-2 text-foreground;
+}
+
+.rich-content h5 {
+  @apply text-base font-bold mt-4 mb-2 text-foreground;
+}
+
+.rich-content h6 {
+  @apply text-base font-semibold mt-4 mb-2 text-foreground;
+}
+
+/* Paragraphs and text */
+.rich-content p {
+  @apply mb-4 text-base text-foreground;
+  @apply leading-relaxed;
+}
+
+.rich-content strong {
+  @apply font-semibold text-foreground;
+}
+
+.rich-content em,
+.rich-content i {
+  @apply italic;
+}
+
+.rich-content u {
+  @apply underline;
+}
+
+/* Lists */
+.rich-content ul {
+  @apply list-disc list-inside mb-4 ml-2 space-y-2;
+  @apply text-foreground;
+}
+
+.rich-content ol {
+  @apply list-decimal list-inside mb-4 ml-2 space-y-2;
+  @apply text-foreground;
+}
+
+.rich-content li {
+  @apply text-base leading-relaxed;
+}
+
+.rich-content ul ul,
+.rich-content ol ol,
+.rich-content ul ol,
+.rich-content ol ul {
+  @apply mt-2 ml-4;
+}
+
+/* Blockquotes */
+.rich-content blockquote {
+  @apply border-l-4 border-accent pl-4 py-2 my-4;
+  @apply italic text-muted-foreground bg-muted/50 rounded-r;
+}
+
+.dark .rich-content blockquote {
+  @apply bg-muted/30;
+}
+
+/* Code */
+.rich-content code {
+  @apply bg-muted px-2 py-1 rounded text-sm font-mono;
+  @apply text-foreground;
+}
+
+.dark .rich-content code {
+  @apply bg-muted;
+}
+
+.rich-content pre {
+  @apply bg-muted border border-border rounded-lg p-4 mb-4;
+  @apply overflow-x-auto;
+}
+
+.rich-content pre code {
+  @apply bg-transparent px-0 py-0;
+  @apply text-sm;
+}
+
+.dark .rich-content pre {
+  @apply bg-slate-900 border-slate-700;
+}
+
+.dark .rich-content pre code {
+  @apply text-slate-100;
+}
+
+/* Links */
+.rich-content a {
+  @apply text-accent underline hover:opacity-80 transition-opacity;
+}
+
+/* Images */
+.rich-content img {
+  @apply max-w-full h-auto rounded-lg my-6 border border-border;
+}
+
+/* Tables */
+.rich-content table {
+  @apply w-full border-collapse my-4;
+}
+
+.rich-content th {
+  @apply bg-muted border border-border px-4 py-2 text-left font-semibold;
+}
+
+.rich-content td {
+  @apply border border-border px-4 py-2;
+}
+
+.rich-content tr:nth-child(even) {
+  @apply bg-muted/50;
+}
+
+.dark .rich-content tr:nth-child(even) {
+  @apply bg-muted/30;
+}
+
+/* Horizontal rule */
+.rich-content hr {
+  @apply my-6 border-t border-border;
+}
