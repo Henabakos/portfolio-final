@@ -64,6 +64,19 @@ export function RichTextEditor({
     extensions: [
       StarterKit.configure({
         codeBlock: false,
+        heading: {
+          levels: [1, 2, 3],
+        },
+        bulletList: {
+          HTMLAttributes: {
+            class: "list-disc list-inside",
+          },
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: "list-decimal list-inside",
+          },
+        },
       }),
       TextStyle,
       Color,
