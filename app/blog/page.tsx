@@ -38,10 +38,28 @@ export default function BlogPage() {
   const fetchPosts = async () => {
     try {
       const response = await fetch("/api/blog");
+      
+      if (!response.ok) {
+        console.error(`API error: ${response.status}`);
+        setPosts([]);
+        return;
+      }
+      
       const data = await response.json();
-      setPosts(data);
+      
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        setPosts(data);
+      } else if (data && data.error) {
+        console.error("API returned error:", data.error);
+        setPosts([]);
+      } else {
+        console.warn("Unexpected API response format:", data);
+        setPosts([]);
+      }
     } catch (error) {
       console.error("Error fetching blog posts:", error);
+      setPosts([]);
     } finally {
       setLoading(false);
     }
