@@ -8,28 +8,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ImageUpload } from "@/components/admin/image-upload";
 import { Plus, Pencil, Trash2, Save, X, Star } from "lucide-react";
+import { FaUpwork } from "react-icons/fa6";
+import Image from "next/image";
+import type { Testimonial } from "@/lib/testimonials/types";
+import { TESTIMONIAL_PLATFORMS } from "@/lib/testimonials/types";
 
-interface Testimonial {
-  id: string;
-  name: string;
-  position: string;
-  content: string;
-  rating: number;
-  order: number;
-}
+const emptyForm = {
+  name: "",
+  position: "",
+  content: "",
+  rating: 5,
+  order: 0,
+  screenshot: "",
+  platform: "Upwork",
+  projectTitle: "",
+};
 
 export default function TestimonialsAdmin() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    position: "",
-    content: "",
-    rating: 5,
-    order: 0,
-  });
+  const [formData, setFormData] = useState(emptyForm);
 
   useEffect(() => {
     fetchTestimonials();
@@ -39,7 +47,7 @@ export default function TestimonialsAdmin() {
     try {
       const response = await fetch("/api/testimonials");
       const data = await response.json();
-      setTestimonials(data);
+      setTestimonials(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching testimonials:", error);
     } finally {
@@ -56,17 +64,20 @@ export default function TestimonialsAdmin() {
         : "/api/testimonials";
       const method = editingId ? "PUT" : "POST";
 
-      await fetch(url, {
+      const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      setFormData({ name: "", position: "", content: "", rating: 5, order: 0 });
+      if (!response.ok) throw new Error("Failed to save");
+
+      setFormData(emptyForm);
       setEditingId(null);
       fetchTestimonials();
     } catch (error) {
       console.error("Error saving testimonial:", error);
+      alert("Failed to save testimonial");
     }
   };
 
@@ -78,6 +89,9 @@ export default function TestimonialsAdmin() {
       content: testimonial.content,
       rating: testimonial.rating,
       order: testimonial.order,
+      screenshot: testimonial.screenshot || "",
+      platform: testimonial.platform || "Upwork",
+      projectTitle: testimonial.projectTitle || "",
     });
   };
 
@@ -94,7 +108,7 @@ export default function TestimonialsAdmin() {
 
   const handleCancel = () => {
     setEditingId(null);
-    setFormData({ name: "", position: "", content: "", rating: 5, order: 0 });
+    setFormData(emptyForm);
   };
 
   if (loading) {
@@ -106,11 +120,15 @@ export default function TestimonialsAdmin() {
   return (
     <div className="space-y-6">
       <div>
+        <div className="flex items-center gap-2 text-[#14a800] mb-2">
+          <FaUpwork className="h-6 w-6" />
+          <span className="text-sm font-medium">Client reviews</span>
+        </div>
         <h1 className="text-3xl font-bold text-gray-900">
           Manage Testimonials
         </h1>
         <p className="text-gray-600">
-          Add, edit, or remove testimonials from your portfolio
+          Upload Upwork review screenshots and client feedback for your About page
         </p>
       </div>
 
@@ -118,11 +136,46 @@ export default function TestimonialsAdmin() {
         <Card>
           <CardHeader>
             <CardTitle>
-              {editingId ? "Edit Testimonial" : "Add New Testimonial"}
+              {editingId ? "Edit Testimonial" : "Add Upwork Review"}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="screenshot">Upwork review screenshot</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Screenshot the client&apos;s review from Upwork — this is shown prominently on your site
+                </p>
+                <ImageUpload
+                  value={formData.screenshot}
+                  onChange={(url) =>
+                    setFormData({ ...formData, screenshot: url })
+                  }
+                  placeholder="Upload Upwork screenshot"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="platform">Platform</Label>
+                <Select
+                  value={formData.platform}
+                  onValueChange={(v) =>
+                    setFormData({ ...formData, platform: v })
+                  }
+                >
+                  <SelectTrigger id="platform">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TESTIMONIAL_PLATFORMS.map((p) => (
+                      <SelectItem key={p} value={p}>
+                        {p}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div>
                 <Label htmlFor="name">Client Name</Label>
                 <Input
@@ -137,34 +190,46 @@ export default function TestimonialsAdmin() {
               </div>
 
               <div>
-                <Label htmlFor="position">Position/Title</Label>
+                <Label htmlFor="position">Position / Company</Label>
                 <Input
                   id="position"
                   value={formData.position}
                   onChange={(e) =>
                     setFormData({ ...formData, position: e.target.value })
                   }
-                  placeholder="e.g., Senior Designer"
+                  placeholder="e.g., CEO at Acme Inc."
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="content">Testimonial Content</Label>
+                <Label htmlFor="projectTitle">Project / Job title</Label>
+                <Input
+                  id="projectTitle"
+                  value={formData.projectTitle}
+                  onChange={(e) =>
+                    setFormData({ ...formData, projectTitle: e.target.value })
+                  }
+                  placeholder="e.g., E-commerce Website Redesign"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="content">Review text</Label>
                 <Textarea
                   id="content"
                   value={formData.content}
                   onChange={(e) =>
                     setFormData({ ...formData, content: e.target.value })
                   }
-                  placeholder="Write the testimonial..."
-                  rows={5}
+                  placeholder="Paste or summarize what the client said…"
+                  rows={4}
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="rating">Rating (1-5 stars)</Label>
+                <Label htmlFor="rating">Rating (1–5 stars)</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     id="rating"
@@ -175,13 +240,13 @@ export default function TestimonialsAdmin() {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        rating: Number.parseInt(e.target.value),
+                        rating: Number.parseInt(e.target.value, 10) || 5,
                       })
                     }
                     className="w-20"
                   />
                   <div className="flex">
-                    {[...Array(formData.rating)].map((_, i) => (
+                    {Array.from({ length: formData.rating }).map((_, i) => (
                       <Star
                         key={i}
                         className="w-4 h-4 fill-yellow-400 text-yellow-400"
@@ -192,7 +257,7 @@ export default function TestimonialsAdmin() {
               </div>
 
               <div>
-                <Label htmlFor="order">Display Order</Label>
+                <Label htmlFor="order">Display order</Label>
                 <Input
                   id="order"
                   type="number"
@@ -200,10 +265,9 @@ export default function TestimonialsAdmin() {
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      order: Number.parseInt(e.target.value),
+                      order: Number.parseInt(e.target.value, 10) || 0,
                     })
                   }
-                  placeholder="0"
                 />
               </div>
 
@@ -214,14 +278,10 @@ export default function TestimonialsAdmin() {
                   ) : (
                     <Plus className="w-4 h-4 mr-2" />
                   )}
-                  {editingId ? "Update Testimonial" : "Add Testimonial"}
+                  {editingId ? "Update" : "Add testimonial"}
                 </Button>
                 {editingId && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleCancel}
-                  >
+                  <Button type="button" variant="outline" onClick={handleCancel}>
                     <X className="w-4 h-4 mr-2" />
                     Cancel
                   </Button>
@@ -233,39 +293,45 @@ export default function TestimonialsAdmin() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Existing Testimonials ({testimonials.length})</CardTitle>
+            <CardTitle>Existing ({testimonials.length})</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[70vh] overflow-y-auto">
               {testimonials.map((testimonial) => (
                 <div
                   key={testimonial.id}
-                  className="border rounded-lg p-4 space-y-2"
+                  className="border rounded-lg overflow-hidden"
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg">
-                        {testimonial.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">
+                  {testimonial.screenshot && (
+                    <div className="relative h-32 bg-muted">
+                      <Image
+                        src={testimonial.screenshot}
+                        alt=""
+                        fill
+                        className="object-cover object-top"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4 flex justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold truncate">
+                          {testimonial.name}
+                        </h3>
+                        {testimonial.platform && (
+                          <span className="text-xs text-[#14a800] font-medium shrink-0">
+                            {testimonial.platform}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">
                         {testimonial.position}
                       </p>
-                      <div className="flex my-2">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className="w-3 h-3 fill-yellow-400 text-yellow-400"
-                          />
-                        ))}
-                      </div>
-                      <p className="text-sm text-gray-700 mt-2">
+                      <p className="text-sm text-gray-700 mt-2 line-clamp-2">
                         {testimonial.content}
                       </p>
-                      <p className="text-xs text-gray-400 mt-2">
-                        Order: {testimonial.order}
-                      </p>
                     </div>
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex flex-col gap-2 shrink-0">
                       <Button
                         size="sm"
                         variant="outline"
@@ -286,7 +352,7 @@ export default function TestimonialsAdmin() {
               ))}
               {testimonials.length === 0 && (
                 <p className="text-center text-gray-500 py-8">
-                  No testimonials yet. Add your first testimonial!
+                  No testimonials yet. Upload your first Upwork review screenshot!
                 </p>
               )}
             </div>

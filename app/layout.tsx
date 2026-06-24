@@ -2,9 +2,11 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
+import "tippy.js/dist/tippy.css";
 import { Header } from "@/components/navbar/NavBar";
 import { Footer } from "@/components/footer/footer";
 import { ThemeProvider } from "@/context/theme-context";
+import { Toaster } from "@/components/ui/sonner";
 
 const bricolageGrotesque = Bricolage_Grotesque({
   variable: "--font-bricolage-grotesque",
@@ -31,10 +33,11 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <Header />
-          <div className=" sm:w-[90vw] lg:max-w-[1440px] sm:mx-auto mt-10 lg:mt-20 ">
+          <div className=" sm:w-[90vw] lg:max-w-360 sm:mx-auto mt-10 lg:mt-20 ">
             {children}
           </div>
           <Footer />
+          <Toaster richColors closeButton position="bottom-right" />
         </ThemeProvider>
       </body>
     </html>

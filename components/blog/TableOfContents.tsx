@@ -20,7 +20,7 @@ export function TableOfContents({
   useEffect(() => {
     const extracted = extractHeadings(htmlContent);
     // Only show h2 and h3 headings in TOC
-    const filtered = extracted.filter((h) => h.level <= 3);
+    const filtered = extracted.filter((h) => h.level <= 4);
     setHeadings(filtered);
   }, [htmlContent]);
 

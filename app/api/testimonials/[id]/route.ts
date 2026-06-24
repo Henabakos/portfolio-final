@@ -3,11 +3,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const testimonial = await prisma.testimonial.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!testimonial) {
@@ -29,20 +30,33 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const { name, position, content, rating, order } = body;
+    const {
+      name,
+      position,
+      content,
+      rating,
+      order,
+      screenshot,
+      platform,
+      projectTitle,
+    } = body;
 
     const testimonial = await prisma.testimonial.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         position,
         content,
         rating,
         order,
+        screenshot: screenshot || null,
+        platform: platform || null,
+        projectTitle: projectTitle || null,
       },
     });
 
@@ -58,11 +72,12 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.testimonial.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: "Testimonial deleted successfully" });

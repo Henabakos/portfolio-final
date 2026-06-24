@@ -17,7 +17,6 @@ interface BlogPost {
   slug: string;
   published: boolean;
   tags: string[];
-  readTime?: number;
   createdAt: string;
 }
 
@@ -31,9 +30,9 @@ export default function BlogAdmin() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/blog");
+      const response = await fetch("/api/blog?admin=true");
       const data = await response.json();
-      setPosts(data);
+      setPosts(Array.isArray(data) ? data : data.posts || []);
     } catch (error) {
       console.error("Error fetching blog posts:", error);
     } finally {
@@ -117,7 +116,6 @@ export default function BlogAdmin() {
                           <Calendar className="w-4 h-4" />
                           {new Date(post.createdAt).toLocaleDateString()}
                         </div>
-                        {post.readTime && <span>{post.readTime} min read</span>}
                         <Badge
                           variant={post.published ? "default" : "secondary"}
                           className="cursor-pointer"
@@ -135,7 +133,7 @@ export default function BlogAdmin() {
                           <Eye className="w-4 h-4" />
                         </Button>
                       </Link>
-                      <Link href={`/admin/blog/edit/${post.id}`}>
+                      <Link href={`/admin/blog/${post.id}`}>
                         <Button size="sm" variant="outline">
                           <Edit className="w-4 h-4" />
                         </Button>

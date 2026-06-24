@@ -19,7 +19,16 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, position, content, rating, order } = body;
+    const {
+      name,
+      position,
+      content,
+      rating,
+      order,
+      screenshot,
+      platform,
+      projectTitle,
+    } = body;
 
     const testimonial = await prisma.testimonial.create({
       data: {
@@ -28,6 +37,9 @@ export async function POST(request: NextRequest) {
         content,
         rating: rating || 5,
         order: order || 0,
+        screenshot: screenshot || null,
+        platform: platform || "Upwork",
+        projectTitle: projectTitle || null,
       },
     });
 

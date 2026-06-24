@@ -153,7 +153,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen w-full py-10 px-3 sm:px-4">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 max-w-[1440px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 max-w-360 mx-auto">
           {/* Left Side */}
           <div className="space-y-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
