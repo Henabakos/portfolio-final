@@ -43,7 +43,7 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-auto mx-4 sm:w-[90vw] lg:max-w-[1440px] 
+      className={`sticky top-0 z-50 w-auto mx-4 sm:w-[90vw] lg:max-w-360 
         border-b border-border/40 bg-background/95 dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F] backdrop-blur 
         supports-[backdrop-filter]:bg-background/60 md:mx-auto 
         rounded-md shadow-md shadow-black/5 dark:shadow-gray-500/4

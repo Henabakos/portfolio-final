@@ -38,19 +38,46 @@ model Project {
 }
 
 model BlogPost {
-  id          String   @id @default(cuid())
-  title       String
-  content     String   @db.Text
-  excerpt     String?
-  coverImage  String?
-  slug        String   @unique
-  published   Boolean  @default(false)
-  tags        String[] // Array of tags
-  readTime    Int?     // Reading time in minutes
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String         @id @default(cuid())
+  title           String
+  subtitle        String?
+  content         String         @db.Text
+  excerpt         String?
+  coverImage      String?
+  slug            String         @unique
+  category        String?
+  published       Boolean        @default(false)
+  featured        Boolean        @default(false)
+  tags            String[]
+  author          String?
+  seoTitle        String?
+  seoDescription  String?
+  publishedAt     DateTime?
+  views           Int            @default(0)
+  likes           Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  comments        BlogComment[]
 
+  @@index([published, publishedAt])
+  @@index([category])
+  @@index([featured])
   @@map("blog_posts")
+}
+
+model BlogComment {
+  id        String   @id @default(cuid())
+  postId    String
+  post      BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    String
+  email     String?
+  content   String   @db.Text
+  approved  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId])
+  @@map("blog_comments")
 }
 
 model About {
@@ -164,14 +191,17 @@ model Experience {
 }
 
 model Testimonial {
-  id        String   @id @default(cuid())
-  name      String   // e.g., "Ashton Agar"
-  position  String   // e.g., "Senior Designer"
-  content   String   @db.Text
-  rating    Int      @default(5) // 1-5 stars
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String   // e.g., "Ashton Agar"
+  position     String   // e.g., "Senior Designer"
+  content      String   @db.Text
+  rating       Int      @default(5) // 1-5 stars
+  order        Int      @default(0)
+  screenshot   String?  // URL to screenshot image
+  platform     String?  // e.g., "Upwork", "Fiverr", "LinkedIn"
+  projectTitle String?  // e.g., "Website Redesign"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("testimonials")
 }

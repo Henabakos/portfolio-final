@@ -32,6 +32,8 @@ import { fetcher } from "@/lib/api";
 import { LoadingScreen } from "@/components/loading-screen";
 import { CustomArrow } from "@/components/custom-arrow";
 import { InfiniteScrollProjects } from "../infinite-scroll-projects";
+import { FaUpwork } from "react-icons/fa6";
+import { TbBrandNextjs } from "react-icons/tb"
 
 // Define fallback data constants outside the component
 const FALLBACK_ABOUT = {
@@ -74,8 +76,8 @@ const FALLBACK_SOCIALS = [
 
 const FALLBACK_TOOLS = [
   { name: "Figma", icon: "Figma" },
-  { name: "Web Development", icon: "CodeXml" },
-  { name: "Database Design", icon: "Database" },
+  { name: "Web Development", icon: "FaUpwork" },
+  { name: "Database Design", icon: "TbBrandNextjs" },
 ];
 
 const FALLBACK_SERVICES = [
@@ -131,6 +133,8 @@ export function BentoGrid() {
       Code,
       Server,
       Database,
+      FaUpwork,
+      TbBrandNextjs,
       Linkedin,
       Sparkles,
       Palette,
@@ -239,7 +243,7 @@ export function BentoGrid() {
                   } py-3 sm:py-4 flex gap-3`}
                 >
                   <div className="flex items-center gap-3">
-                    <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 text-foreground bg-background rounded-full p-2 border border-border dark:border-white/5" />
+                    <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 text-foreground bg-background rounded-sm p-2 border border-border dark:border-white/5" />
                   </div>
                   <div>
                     <span className="font-medium text-sm">
@@ -296,7 +300,7 @@ export function BentoGrid() {
           </Card>
         </Link>
 
-        {/* <Link href="/projects" className="flex-1">
+        <Link href="/projects" className="flex-1">
           <Card
             className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
     border border-gray-100/2 hover:gradient-hover transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group h-full"
@@ -329,11 +333,11 @@ export function BentoGrid() {
               </div>
             </div>
           </Card>
-        </Link> */}
+        </Link>
 
-        <div className="mb-4 sm:mb-5 flex-1">
+        {/* <div className="mb-4 sm:mb-5 flex-1">
           <InfiniteScrollProjects />
-        </div>
+        </div> */}
         <Link href="/about" className="flex-1">
           <Card
             className="p-4 sm:p-6 lg:p-8 gradient-card dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]

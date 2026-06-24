@@ -2,22 +2,15 @@
 
 import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { ImageUpload } from "@/components/admin/image-upload";
-import { RichTextEditor } from "@/components/rich-text-editor";
-import { Save, ArrowLeft, Plus, X, Trash2 } from "lucide-react";
-import Link from "next/link";
 import useSWR from "swr";
 import { fetcher } from "@/lib/api";
 import { LoadingScreen } from "@/components/loading-screen";
+import { BlogPostForm } from "@/components/blog/BlogPostForm";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import type { BlogPostInput } from "@/lib/blog/types";
 
-export default function EditBlogPost({
+export default function EditBlogPostPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -26,307 +19,95 @@ export default function EditBlogPost({
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [newTag, setNewTag] = useState("");
+  const [initialData, setInitialData] = useState<Partial<BlogPostInput>>();
 
   const { data: blogPost, error } = useSWR(
     `/api/blog/${resolvedParams.id}`,
     fetcher
   );
 
-  const [post, setPost] = useState({
-    title: "",
-    content: "",
-    excerpt: "",
-    coverImage: "",
-    slug: "",
-    published: false,
-    tags: [] as string[],
-    readTime: 5,
-  });
-
   useEffect(() => {
     if (blogPost) {
-      setPost({
-        title: blogPost.title || "",
-        content: blogPost.content || "",
-        excerpt: blogPost.excerpt || "",
-        coverImage: blogPost.coverImage || "",
-        slug: blogPost.slug || "",
-        published: blogPost.published || false,
-        tags: blogPost.tags || [],
-        readTime: blogPost.readTime || 5,
+      setInitialData({
+        title: blogPost.title,
+        subtitle: blogPost.subtitle,
+        content: blogPost.content,
+        excerpt: blogPost.excerpt,
+        coverImage: blogPost.coverImage,
+        slug: blogPost.slug,
+        category: blogPost.category,
+        published: blogPost.published,
+        featured: blogPost.featured,
+        tags: blogPost.tags,
+        author: blogPost.author,
+        seoTitle: blogPost.seoTitle,
+        seoDescription: blogPost.seoDescription,
+        publishedAt: blogPost.publishedAt,
       });
     }
   }, [blogPost]);
 
   if (!blogPost && !error) return <LoadingScreen />;
 
-  if (error) {
+  if (error || !blogPost) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Blog post not found</h1>
-          <Button asChild>
-            <Link href="/admin/blog">Back to Blog</Link>
-          </Button>
-        </div>
+      <div className="text-center py-12">
+        <h1 className="text-2xl font-bold mb-4">Blog post not found</h1>
+        <Button asChild>
+          <Link href="/admin/blog">Back to Blog</Link>
+        </Button>
       </div>
     );
   }
 
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-  };
-
-  const handleTitleChange = (title: string) => {
-    setPost({
-      ...post,
-      title,
-      slug: generateSlug(title),
-    });
-  };
-
-  const handleSave = async () => {
-    if (!post.title || !post.content) {
-      alert("Please fill in title and content");
-      return;
-    }
-
+  const handleSave = async (data: BlogPostInput) => {
     setSaving(true);
     try {
       const response = await fetch(`/api/blog/${resolvedParams.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(post),
+        body: JSON.stringify(data),
       });
-
-      if (response.ok) {
-        router.push("/admin/blog");
-      } else {
-        throw new Error("Failed to update blog post");
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || "Failed to update");
       }
-    } catch (error) {
-      console.error("Error updating blog post:", error);
-      alert("Error updating blog post");
+      localStorage.removeItem(`blog-draft-${resolvedParams.id}`);
+      router.push("/admin/blog");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Error updating blog post");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this blog post?")) {
-      return;
-    }
-
+    if (!confirm("Are you sure you want to delete this blog post?")) return;
     setDeleting(true);
     try {
       const response = await fetch(`/api/blog/${resolvedParams.id}`, {
         method: "DELETE",
       });
-
-      if (response.ok) {
-        router.push("/admin/blog");
-      } else {
-        throw new Error("Failed to delete blog post");
-      }
-    } catch (error) {
-      console.error("Error deleting blog post:", error);
+      if (!response.ok) throw new Error("Failed to delete");
+      router.push("/admin/blog");
+    } catch {
       alert("Error deleting blog post");
     } finally {
       setDeleting(false);
     }
   };
 
-  const addTag = () => {
-    if (newTag.trim() && !post.tags.includes(newTag.trim())) {
-      setPost({
-        ...post,
-        tags: [...post.tags, newTag.trim()],
-      });
-      setNewTag("");
-    }
-  };
-
-  const removeTag = (index: number) => {
-    setPost({
-      ...post,
-      tags: post.tags.filter((_, i) => i !== index),
-    });
-  };
+  if (!initialData) return <LoadingScreen />;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href="/admin/blog">
-          <Button variant="outline" size="sm">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Edit Blog Post</h1>
-          <p className="text-gray-600">Update your blog post</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Post Content</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title *</Label>
-                <Input
-                  id="title"
-                  value={post.title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  placeholder="Enter post title"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="slug">Slug</Label>
-                <Input
-                  id="slug"
-                  value={post.slug}
-                  onChange={(e) => setPost({ ...post, slug: e.target.value })}
-                  placeholder="post-url-slug"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="excerpt">Excerpt</Label>
-                <Textarea
-                  id="excerpt"
-                  value={post.excerpt}
-                  onChange={(e) =>
-                    setPost({ ...post, excerpt: e.target.value })
-                  }
-                  placeholder="Brief description of the post..."
-                  rows={3}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="content">Content *</Label>
-                <RichTextEditor
-                  content={post.content}
-                  onChange={(content) => setPost({ ...post, content })}
-                  placeholder="Write your blog post content here..."
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Post Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="published"
-                  checked={post.published}
-                  onCheckedChange={(checked) =>
-                    setPost({ ...post, published: checked })
-                  }
-                />
-                <Label htmlFor="published">Publish immediately</Label>
-              </div>
-
-              <div>
-                <Label htmlFor="readTime">Read Time (minutes)</Label>
-                <Input
-                  id="readTime"
-                  type="number"
-                  value={post.readTime}
-                  onChange={(e) =>
-                    setPost({
-                      ...post,
-                      readTime: Number.parseInt(e.target.value) || 5,
-                    })
-                  }
-                  min="1"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Cover Image</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ImageUpload
-                value={post.coverImage}
-                onChange={(url) => setPost({ ...post, coverImage: url })}
-                placeholder="Upload cover image"
-              />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Tags</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  placeholder="Add a tag"
-                  onKeyPress={(e) => e.key === "Enter" && addTag()}
-                />
-                <Button onClick={addTag} size="sm">
-                  <Plus className="w-4 h-4" />
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="flex items-center gap-1"
-                  >
-                    {tag}
-                    <X
-                      className="w-3 h-3 cursor-pointer"
-                      onClick={() => removeTag(index)}
-                    />
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      <div className="flex justify-between gap-4">
-        <Button
-          variant="destructive"
-          onClick={handleDelete}
-          disabled={deleting}
-        >
-          <Trash2 className="w-4 h-4 mr-2" />
-          {deleting ? "Deleting..." : "Delete Post"}
-        </Button>
-        <div className="flex gap-4">
-          <Link href="/admin/blog">
-            <Button variant="outline">Cancel</Button>
-          </Link>
-          <Button onClick={handleSave} disabled={saving}>
-            <Save className="w-4 h-4 mr-2" />
-            {saving ? "Saving..." : "Save Changes"}
-          </Button>
-        </div>
-      </div>
-    </div>
+    <BlogPostForm
+      mode="edit"
+      postId={resolvedParams.id}
+      initialData={initialData}
+      onSave={handleSave}
+      onDelete={handleDelete}
+      saving={saving}
+      deleting={deleting}
+    />
   );
 }

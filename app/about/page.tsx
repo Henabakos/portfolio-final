@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Star,
   CheckCheck,
   Layout,
   Atom,
@@ -31,7 +30,6 @@ import {
   Palette,
   Package,
   CodeXml,
-  Quote,
   ThumbsUp,
   MessageSquare,
   LifeBuoy,
@@ -42,6 +40,9 @@ import emailjs from "@emailjs/browser";
 import useSWR from "swr";
 import { CustomArrow } from "@/components/custom-arrow";
 import { fetcher } from "@/lib/api";
+import { FaUpwork } from "react-icons/fa6";
+import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
+import type { Testimonial } from "@/lib/testimonials/types";
 
 const items = [
   {
@@ -102,15 +103,6 @@ interface Experience {
   order: number;
 }
 
-interface Testimonial {
-  id: string;
-  name: string;
-  position: string;
-  content: string;
-  rating: number;
-  order: number;
-}
-
 interface About {
   id: string;
   name: string;
@@ -141,6 +133,7 @@ const getIconComponent = (iconName: string) => {
     Frame,
     Feather,
     CurlyBraces,
+    FaUpwork,
     Layout,
     Rocket,
     Atom,
@@ -233,11 +226,13 @@ export default function AboutPage() {
           aboutRes.json(),
         ]);
 
-        setServices(servicesData);
-        setEducation(educationData);
-        setExperience(experienceData);
-        setTestimonials(testimonialsData);
-        setAbout(aboutData);
+        setServices(Array.isArray(servicesData) ? servicesData : []);
+        setEducation(Array.isArray(educationData) ? educationData : []);
+        setExperience(Array.isArray(experienceData) ? experienceData : []);
+        setTestimonials(
+          Array.isArray(testimonialsData) ? testimonialsData : []
+        );
+        if (aboutData && !aboutData.error) setAbout(aboutData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -339,19 +334,11 @@ export default function AboutPage() {
                 Henok Assefa
               </h1>
               <p className="text-[18px] lg:text-[24px] text-gray-600 dark:text-[#858B9B]">
-                Versatile Designer
+              Full-Stack Developer and AI Engineer
               </p>
             </div>
             <p className="text-[#6E737B] dark:text-[#858B9B] leading-[33.75px] text-[14px] lg:text-[18px] font-normal max-w-prose">
-              A creative and versatile digital designer with over three years of
-              experience in{" "}
-              <span className="text-[#2F3236] dark:text-white border border-gray-200 dark:border-white/20 shadow-sm px-2 py-1 rounded-xl font-normal">
-                designing and developing
-              </span>{" "}
-              engaging digital media for various platforms and audiences.
-              Passionate about crafting modern, user-friendly designs that make
-              a lasting impact.
-            </p>
+            A passionate Full-Stack Developer and AI Engineer with over four years of experience designing, building, and scaling modern web applications. Experienced in <span className="text-[#2F3236] dark:text-white border border-gray-200 dark:border-white/20 shadow-sm px-2 py-1 rounded-xl font-normal">full-stack development and AI-driven solutions</span>, transforming complex ideas into intuitive, high-performing products. Dedicated to creating intelligent, user-centric experiences through cutting-edge technologies, scalable architectures, and innovative problem-solving.</p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
               <div className="flex items-center gap-2 text-[#6E737B] dark:text-[#858B9B] ">
                 <CheckCheck className="w-5 h-5" />
@@ -613,44 +600,7 @@ export default function AboutPage() {
         </div>
       </Card>
 
-      {/* Testimonials - Now fetching from database */}
-      <div className="mb-20 mt-10">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial) => (
-            <Card
-              key={testimonial.id}
-              className=" shadow-sm  dark:bg-gradient-to-b dark:from-[#252627] dark:to-[#1E1E1F]
-    border border-gray-100/2
-    hover:border-gray-100/10"
-            >
-              <CardContent className="p-6">
-                <div className="text-4xl text-gray-300 mb-4 ">
-                  <Quote className="w-16 h-16 " />
-                </div>
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
-                <p className="gray-text text-[16px] mb-6 leading-[30px]">
-                  {testimonial.content}
-                </p>
-                <div>
-                  <p className="font-semibold text-[20px] black-text dark:text-[#CDD0DA]">
-                    {testimonial.name}
-                  </p>
-                  <p className="text-[15.04px] gray-text leading-[24px]">
-                    {testimonial.position}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+      <TestimonialsSection testimonials={testimonials} />
 
       {/* Social Media Links */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-20">
